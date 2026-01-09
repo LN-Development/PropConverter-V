@@ -95,6 +95,48 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
         options={"HIDDEN"}
     )
 
+    # Format options
+    export_format_native: bpy.props.BoolProperty(
+        name="Native",
+        description="Export in native binary format",
+        default=True,
+    )
+    export_format_xml: bpy.props.BoolProperty(
+        name="CodeWalker XML",
+        description="Export as CodeWalker XML",
+        default=True,
+    )
+
+    # Version options
+    target_version_gen8: bpy.props.BoolProperty(
+        name="Gen 8",
+        description="GTAV Legacy",
+        default=True,
+    )
+    target_version_gen9: bpy.props.BoolProperty(
+        name="Gen 9",
+        description="GTAV Enhanced",
+        default=True,
+    )
+
+    def draw(self, context):
+        layout = self.layout
+        row = layout.row(align=False)
+        
+        # Format column
+        col = row.column(align=True, heading="Format")
+        sub = col.row(align=True)
+        sub.prop(self, "export_format_native", text="Native", toggle=True)
+        sub = col.row(align=True)
+        sub.prop(self, "export_format_xml", text="CodeWalker XML", toggle=True)
+
+        # Version column
+        col = row.column(align=True, heading="Version")
+        sub = col.row(align=True)
+        sub.prop(self, "target_version_gen8", text="Gen 8", toggle=True)
+        sub = col.row(align=True)
+        sub.prop(self, "target_version_gen9", text="Gen 9", toggle=True)
+
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
         return {"RUNNING_MODAL"}
@@ -116,6 +158,39 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
 
         print("=" * 50)
         print(f"Exporting to directory: {self.directory}")
+
+        # Collect format/version selections
+        formats_selected = set()
+        if self.export_format_native:
+            formats_selected.add('NATIVE')
+        if self.export_format_xml:
+            formats_selected.add('CWXML')
+
+        versions_selected = set()
+        if self.target_version_gen8:
+            versions_selected.add('GEN8')
+        if self.target_version_gen9:
+            versions_selected.add('GEN9')
+
+        if not formats_selected:
+            self.report({"ERROR"}, "Please select at least one export format!")
+            return {"CANCELLED"}
+        if not versions_selected:
+            self.report({"ERROR"}, "Please select at least one target version!")
+            return {"CANCELLED"}
+
+        # Apply preferences to Sollumz export settings
+        try:
+            from sollumz.sollumz_preferences import get_addon_preferences
+        except Exception:
+            get_addon_preferences = None
+        if get_addon_preferences:
+            prefs = get_addon_preferences(context)
+            if prefs:
+                export_settings = prefs.export_settings
+                export_settings.target_formats = formats_selected
+                export_settings.target_versions = versions_selected
+                print(f"Set export settings - Formats: {export_settings.target_formats}, Versions: {export_settings.target_versions}")
 
         # Export YTYP first
         try:
