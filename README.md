@@ -2,6 +2,16 @@
 
 Add-on for automatic conversion of props to GTA V.
 
+## HOW TO USE
+
+Import a Mesh, select it, change the vertex color, select collision and shader materials then click to convert, after it remember to set the textures on the drawable model.
+
+All the names will be as the original mesh.
+
+YTYP, YDR and YTD.
+
+You need to create a YTD with the same name as in the others.
+
 ## Dependencies
 
 [Sollumz](https://github.com/Sollumz/Sollumz) 2.8.0
@@ -13,6 +23,12 @@ Add-on for automatic conversion of props to GTA V.
 3. Go to Edit > Preferences > Add-ons > Install from Disk.
 4. Locate the add-on directory and select the .zip file.
 5. Install and restart Blender.
+
+## TO-DO
+
+- Export options (Legacy/Enhanced)
+- Texture auto name set
+- Decimate option for collision optimization
 
 ## Credits
 
