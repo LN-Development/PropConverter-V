@@ -26,6 +26,101 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         default=(1.0, 1.0, 1.0, 1.0),
     )
 
+    enable_decimate: bpy.props.BoolProperty(
+        name="Enable Decimate",
+        description="Apply decimate modifier to collision mesh to reduce polygon count",
+        default=False,
+    )
+
+    decimate_type: bpy.props.EnumProperty(
+        name="Decimate Type",
+        description="Type of decimation to apply",
+        items=[
+            ('COLLAPSE', "Collapse", "Collapse edges"),
+            ('UNSUBDIV', "Un-subdivide", "Remove subdivision surfaces"),
+            ('PLANAR', "Planar", "Remove planar faces"),
+        ],
+        default='UNSUBDIV',
+    )
+
+    decimate_ratio: bpy.props.FloatProperty(
+        name="Decimate Ratio",
+        description="Ratio of faces to keep (for Collapse mode)",
+        min=0.0,
+        max=1.0,
+        default=0.5,
+    )
+
+    decimate_iterations: bpy.props.IntProperty(
+        name="Decimate Iterations",
+        description="Number of times to un-subdivide the collision mesh (for Un-subdivide mode)",
+        min=0,
+        max=10,
+        default=1,
+    )
+
+    decimate_use_dissolve: bpy.props.BoolProperty(
+        name="Use Dissolve",
+        description="Dissolve edges when un-subdividing (for Un-subdivide mode)",
+        default=False,
+    )
+
+    decimate_planar_angle: bpy.props.FloatProperty(
+        name="Planar Angle",
+        description="Angle threshold for planar decimation (for Planar mode)",
+        min=0.0,
+        max=180.0,
+        default=80.0,
+    )
+
+    enable_remesh: bpy.props.BoolProperty(
+        name="Enable Remesh",
+        description="Apply remesh modifier to collision mesh",
+        default=False,
+    )
+
+    remesh_mode: bpy.props.EnumProperty(
+        name="Remesh Mode",
+        description="Type of remesh to apply",
+        items=[
+            ('blocks', "Blocks", "Blocky remesh"),
+            ('smooth', "Smooth", "Smooth remesh"),
+            ('sharp', "Sharp", "Sharp remesh"),
+            ('voxels', "Voxels", "Voxel-based remesh"),
+        ],
+        default='smooth',
+    )
+
+    remesh_use_smooth_shade: bpy.props.BoolProperty(
+        name="Smooth Shading",
+        description="Use smooth shading for remesh",
+        default=True,
+    )
+
+    remesh_threshold: bpy.props.FloatProperty(
+        name="Threshold",
+        description="Threshold for blocks, smooth, and sharp remesh modes",
+        min=0.0,
+        max=1.0,
+        default=0.1,
+    )
+
+    remesh_voxel_size: bpy.props.FloatProperty(
+        name="Voxel Size",
+        description="Size of voxels for voxel mode remesh (smaller = higher detail)",
+        min=0.01,
+        max=1.0,
+        default=0.1,
+    )
+
+    remesh_adaptivity: bpy.props.FloatProperty(
+        name="Adaptivity",
+        description="Adaptivity for voxel remesh (higher = more reduction)",
+        min=0.0,
+        max=1.0,
+        default=0.0,
+    )
+
 
 classes = [
     PROPCONVERTER_Properties,

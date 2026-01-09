@@ -34,6 +34,15 @@ def convertToGtaV(context) -> bool:
         print("ERROR: Sollumz addon is not installed or not in sys.path")
         return False
 
+    # Set geometry origin to world origin
+    print(f"Setting geometry origin to world origin for {obj.name}")
+    bpy.ops.object.select_all(action='DESELECT')
+    obj.select_set(True)
+    context.view_layer.objects.active = obj
+    bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+    obj.location = (0, 0, 0)
+    print(f"Origin set to world origin (0, 0, 0)")
+
     original_name, collision_obj = duplicate_and_prepare_mesh(context, obj)
     if not collision_obj:
         print("ERROR: Failed to duplicate and prepare mesh")
