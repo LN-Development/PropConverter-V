@@ -106,10 +106,16 @@ def convertToGtaV(context) -> bool:
         print(f"ERROR: Object outline is not selected")
         return False
     
+    # Sanitize mesh name: convert to lowercase and remove spaces BEFORE any operations
+    sanitized_name = obj.name.lower().replace(" ", "")
+    if sanitized_name != obj.name:
+        print(f"Renaming mesh from '{obj.name}' to '{sanitized_name}'")
+        obj.name = sanitized_name
+    
+    original_name = obj.name
+    print(f"Original object name: {original_name}")
+    
     try:
-        # Store original name
-        original_name = obj.name
-        print(f"Original object name: {original_name}")
         
         # Save reference to original mesh in temporary memory
         context.scene.prop_converter.original_mesh = obj
@@ -200,7 +206,7 @@ def convertToGtaV(context) -> bool:
                 poly_mesh.select_set(True)
                 context.view_layer.objects.active = poly_mesh
                 
-                # Convert all materials to selected collision material
+                # Convert all materials to collision materials (preserving count)
                 try:
                     collision_mat_index = getattr(context.window_manager, "sz_collision_material_index", 0)
                     print(f"Converting materials to collision material index: {collision_mat_index}")
@@ -209,11 +215,23 @@ def convertToGtaV(context) -> bool:
                     collision_materials = importlib.import_module(f"{mod_name}.ybn.collision_materials")
                     create_collision_material = collision_materials.create_collision_material_from_index
                     
-                    # Clear and create collision material
-                    collision_mat = create_collision_material(collision_mat_index)
-                    poly_mesh.data.materials.clear()
-                    poly_mesh.data.materials.append(collision_mat)
-                    print(f"Successfully applied collision material to {poly_mesh.name}")
+                    # Convert each existing material to a collision material
+                    mesh = poly_mesh.data
+                    num_materials = len(mesh.materials)
+                    
+                    if num_materials > 0:
+                        # Replace each material with a collision material (preserving slot count)
+                        for i in range(num_materials):
+                            collision_mat = create_collision_material(collision_mat_index)
+                            mesh.materials[i] = collision_mat
+                            print(f"Converted material slot {i} to collision material")
+                    else:
+                        # If no materials, create one
+                        collision_mat = create_collision_material(collision_mat_index)
+                        mesh.materials.append(collision_mat)
+                        print(f"Created collision material for empty mesh")
+                    
+                    print(f"Successfully converted all materials to collision material on {poly_mesh.name}")
                 except Exception as mat_err:
                     print(f"WARNING: Could not apply collision material to poly_mesh: {mat_err}")
                     import traceback
@@ -244,9 +262,35 @@ def convertToGtaV(context) -> bool:
             bpy.ops.sollumz.converttodrawable()
             print(f"Successfully converted '{obj.name}' to drawable")
             
+            # Find the drawable parent and all drawable model mesh children
+            drawable_parent = obj.parent
+            model_objs = []
+
+            # Helper to collect model meshes under a parent
+            def _collect_model_meshes(parent):
+                found = []
+                if not parent:
+                    return found
+                for child in parent.children:
+                    if child.type == 'MESH' and (child.name.endswith('.model') or getattr(child, 'sollum_type', None) is not None and 'MODEL' in str(child.sollum_type)):
+                        found.append(child)
+                    # Some setups nest models deeper
+                    found.extend(_collect_model_meshes(child))
+                return found
+
+            if drawable_parent:
+                model_objs = _collect_model_meshes(drawable_parent)
+                if model_objs:
+                    print(f"Found drawable models: {[m.name for m in model_objs]}")
+                else:
+                    print(f"WARNING: Could not find .model child, using original object")
+                    model_objs = [obj]
+            else:
+                print(f"WARNING: No drawable parent found, using original object")
+                model_objs = [obj]
+            
             # Parent collision structure to the Drawable 
             if composite_obj:
-                drawable_parent = obj.parent
                 if drawable_parent:
                     print(f"Parenting collision composite {composite_obj.name} to drawable {drawable_parent.name}")
                     composite_obj.parent = drawable_parent
@@ -304,6 +348,13 @@ def convertToGtaV(context) -> bool:
             else:
                 print(f"Using user-selected shader index: {selected_idx} ({shadermats[selected_idx].value})")
 
+            # Select the model objects for material conversion (process first model as active)
+            if model_objs:
+                bpy.ops.object.select_all(action='DESELECT')
+                for m in model_objs:
+                    m.select_set(True)
+                context.view_layer.objects.active = model_objs[0]
+            
             bpy.ops.sollumz.convertallmaterialstoselected()
             print("Successfully converted all materials to selected shader")
         except Exception as e:
@@ -311,6 +362,7 @@ def convertToGtaV(context) -> bool:
             import traceback
             traceback.print_exc()
             return False
+        
         
         print(f"SUCCESS: Duplicated '{original_name}' as '{new_obj.name}'")
         print(f"Both objects stored in temporary memory")
