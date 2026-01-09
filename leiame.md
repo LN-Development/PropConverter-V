@@ -1,10 +1,10 @@
-# PropConverter-V 
+# PropConverter-V
 
 Add-on para conversão automática de props para GTA V.
 
 ## Dependências
 
-[Sollumz](https://github.com/Sollumz/Sollumz)
+[Sollumz](https://github.com/Sollumz/Sollumz) 2.8.0
 
 ## Instalação
 
@@ -28,6 +28,5 @@ Este programa é um software livre: Você pode redistribuí-lo e/ou modificá-lo
 
 Este programa é distribuído na esperança de que seja útil, mas SEM QUALQUER GARANTIA; sem mesmo a garantia implícita de COMERCIABILIDADE ou ADEQUAÇÃO A UM PROPÓSITO ESPECÍFICO. Consulte a [Licença Pública Geral GNU](./LICENSE) para mais detalhes.
 
-Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este programa. Se não, veja <https://www.gnu.org/licenses/>.
-
+Você deve ter recebido uma cópia da Licença Pública Geral GNU junto com este programa. Se não, veja [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/).
 

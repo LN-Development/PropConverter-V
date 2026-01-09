@@ -4,7 +4,7 @@ Add-on for automatic conversion of props to GTA V.
 
 ## Dependencies
 
-[Sollumz](https://github.com/Sollumz/Sollumz)
+[Sollumz](https://github.com/Sollumz/Sollumz) 2.8.0
 
 ## Installation
 
