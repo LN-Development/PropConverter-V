@@ -9,7 +9,7 @@ class PROPCONVERTER_OT_convert_to_gtav(bpy.types.Operator):
     bl_options = {"REGISTER", "UNDO"}
     
     def execute(self, context):
-        # Debug: Print to console
+       
         print("=" * 50)
         print("Conversion Started")
         
@@ -37,7 +37,7 @@ class PROPCONVERTER_OT_convert_to_gtav(bpy.types.Operator):
             print("=" * 50)
             return {"FINISHED"}
         
-        # Check if object outline is selected
+        # Check if object is selected
         if not obj.select_get():
             print("ERROR: Object not selected")
             self.report({"ERROR"}, "Please select a mesh to continue!")
@@ -134,7 +134,6 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
         try:
             print("Exporting Drawable...")
             # The export_assets operator exports all selected Sollumz objects
-            # We need to make sure the drawable is selected
             result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
             if result == {"FINISHED"}:
                 print("Drawable exported successfully")

@@ -3,7 +3,6 @@ from bpy.props import PointerProperty
 
 
 class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
-    """Custom properties for Auto Prop addon"""
 
     original_mesh: PointerProperty(
         name="Original Mesh",

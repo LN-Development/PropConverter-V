@@ -1,7 +1,3 @@
-"""
-UI module - Define panels and UI elements for the addon
-"""
-
 import bpy
 
 
@@ -56,7 +52,7 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
         layout.separator()
         layout.label(text="YTYP")
         
-        # YTYP List (simple display)
+        # YTYP List 
         box = layout.box()
         if len(context.scene.ytyps) > 0:
             for i, ytyp in enumerate(context.scene.ytyps):
