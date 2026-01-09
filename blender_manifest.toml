@@ -7,7 +7,7 @@ tagline = "Addon for automated prop conversion in GTA V that rely's on Sollumz e
 maintainer = "LN"
 type = "add-on"
 
-website = "none"
+website = "https://github.com/LN-Development/PropConverter-V"
 
 tags = ["Import-Export"]
 
