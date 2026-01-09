@@ -6,6 +6,7 @@ from .convert_drawable import convert_drawable
 from .convert_materials import convert_materials
 from .create_ytyp import create_ytyp
 from .create_archetype import create_archetype
+from .set_textures_from_original_name import set_textures_from_original_name
 
 
 def convertToGtaV(context) -> bool:
@@ -61,6 +62,15 @@ def convertToGtaV(context) -> bool:
     if not convert_materials(context, model_objs, mod_name):
         print("ERROR: Material conversion failed")
         return False
+
+    # Optional: After materials are converted, set texture references based on original mesh name
+    scene_props = getattr(context.scene, "prop_converter", None)
+    if scene_props and getattr(scene_props, "auto_texture_from_mesh_name", False):
+        ok_textures = set_textures_from_original_name(context, model_objs, original_name)
+        if ok_textures:
+            print(f"Successfully set per-material textures to external files using base '{original_name}'")
+        else:
+            print("WARNING: Failed to set textures from original name; continuing")
 
     if not create_ytyp(context, original_name):
         print("ERROR: YTYP creation failed")

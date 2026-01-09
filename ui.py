@@ -20,6 +20,8 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
         props = getattr(context.scene, "prop_converter", None)
         if props:
             layout.prop(props, "vertex_color", text="Vertex Color")
+            # Optional auto texture naming from mesh name
+            layout.prop(props, "auto_texture_from_mesh_name", text="Auto Texture from Mesh Name")
             
             # Decimate settings
             layout.separator()

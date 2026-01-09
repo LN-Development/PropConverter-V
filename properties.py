@@ -121,6 +121,12 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         default=0.0,
     )
 
+    auto_texture_from_mesh_name: bpy.props.BoolProperty(
+        name="Auto Texture from Mesh Name",
+        description="After conversion, set each material's textures to external files named from the original mesh (e.g., mesh0_diffuse.dds)",
+        default=False,
+    )
+
 
 classes = [
     PROPCONVERTER_Properties,
