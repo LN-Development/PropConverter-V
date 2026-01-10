@@ -27,6 +27,7 @@ You need to create a YTD with the same name as in the others.
 ## TO-DO
 
 - Big objects auto divider and converter with non embedd collision
+- Auto Ambient Occlusion
 
 ## Credits
 
