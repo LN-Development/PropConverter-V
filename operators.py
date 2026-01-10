@@ -179,44 +179,58 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
             self.report({"ERROR"}, "Please select at least one target version!")
             return {"CANCELLED"}
 
-        # Apply preferences to Sollumz export settings
+        # Get Sollumz preferences and temporarily set export options
         try:
-            from sollumz.sollumz_preferences import get_addon_preferences
-        except Exception:
-            get_addon_preferences = None
-        if get_addon_preferences:
-            prefs = get_addon_preferences(context)
-            if prefs:
-                export_settings = prefs.export_settings
-                export_settings.target_formats = formats_selected
-                export_settings.target_versions = versions_selected
-                print(f"Set export settings - Formats: {export_settings.target_formats}, Versions: {export_settings.target_versions}")
-
-        # Export YTYP first
-        try:
-            print("Exporting YTYP...")
-            result = bpy.ops.sollumz.export_ytyp_io(directory=self.directory)
-            if result == {"FINISHED"}:
-                print("YTYP exported successfully")
-            else:
-                self.report({"WARNING"}, "YTYP export returned non-finished status")
+            # Find Sollumz addon preferences
+            sollumz_prefs = None
+            for addon in context.preferences.addons:
+                if 'sollumz' in addon.module.lower():
+                    sollumz_prefs = addon.preferences
+                    break
+            
+            if sollumz_prefs is None:
+                self.report({"ERROR"}, "Sollumz addon not found. Please ensure it's installed and enabled.")
+                return {"CANCELLED"}
+            
+            # Store original settings to restore later
+            export_settings = sollumz_prefs.export_settings
+            original_formats = set(export_settings.target_formats)
+            original_versions = set(export_settings.target_versions)
+            
+            # Apply our custom settings temporarily
+            export_settings.target_formats = formats_selected
+            export_settings.target_versions = versions_selected
+            
+            print(f"Set export settings - Formats: {export_settings.target_formats}, Versions: {export_settings.target_versions}")
+            
+            try:
+                # Export YTYP first
+                print("Exporting YTYP...")
+                result = bpy.ops.sollumz.export_ytyp_io(directory=self.directory)
+                if result == {"FINISHED"}:
+                    print("YTYP exported successfully")
+                else:
+                    self.report({"WARNING"}, "YTYP export returned non-finished status")
+                
+                # Export Drawable (YDR)
+                print("Exporting Drawable...")
+                result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
+                if result == {"FINISHED"}:
+                    print("Drawable exported successfully")
+                else:
+                    self.report({"WARNING"}, "Drawable export returned non-finished status")
+                    
+            finally:
+                # Restore original settings
+                export_settings.target_formats = original_formats
+                export_settings.target_versions = original_versions
+                print("Restored original export settings")
+                
         except Exception as e:
-            print(f"ERROR exporting YTYP: {e}")
-            self.report({"ERROR"}, f"Failed to export YTYP: {e}")
-            return {"CANCELLED"}
-
-        # Export Drawable (YDR)
-        try:
-            print("Exporting Drawable...")
-            # The export_assets operator exports all selected Sollumz objects
-            result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
-            if result == {"FINISHED"}:
-                print("Drawable exported successfully")
-            else:
-                self.report({"WARNING"}, "Drawable export returned non-finished status")
-        except Exception as e:
-            print(f"ERROR exporting Drawable: {e}")
-            self.report({"ERROR"}, f"Failed to export Drawable: {e}")
+            print(f"ERROR during export: {e}")
+            import traceback
+            traceback.print_exc()
+            self.report({"ERROR"}, f"Export failed: {str(e)}")
             return {"CANCELLED"}
 
         print("=" * 50)
