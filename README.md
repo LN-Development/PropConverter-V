@@ -26,9 +26,8 @@ You need to create a YTD with the same name as in the others.
 
 ## TO-DO
 
-- Export options (Legacy/Enhanced)
-- Texture auto name set
-- Decimate option for collision optimization
+- Big objects auto divider and converter with non embedd collision
+- Auto Ambient Occlusion
 
 ## Credits
 
