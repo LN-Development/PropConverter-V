@@ -6,8 +6,6 @@ Add-on for automatic conversion of props to GTA V with integrated Vertex Color M
 
 Import a Mesh, select it, change the vertex color, select collision and shader materials then click to convert, after it remember to set the textures on the drawable model.
 
-**Vertex Color Master**: Advanced vertex color manipulation tools are available in the VCM panel under the Prop Converter tab (requires Vertex Paint mode).
-
 All the names will be as the original mesh.
 
 YTYP, YDR and YTD.
@@ -40,6 +38,8 @@ You need to create a YTD with the same name as in the others.
 [Sollumz](https://github.com/Sollumz/Sollumz)
 
 [CodeWalker](https://github.com/dexyfex/CodeWalker)
+
+Thanks to Alexguirre for the help
 
 ## License
 
