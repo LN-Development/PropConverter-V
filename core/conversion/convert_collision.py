@@ -5,29 +5,52 @@ import importlib
 def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
     """Convert collision mesh to composite and apply collision materials."""
     try:
+        print("\n" + "="*80)
+        print("[STAGE] convert_collision: ENTRY")
+        print(f"[DEBUG] Input collision object: {collision_obj.name}")
+        print(f"[DEBUG]   Mesh loops before conversion: {len(collision_obj.data.loops)}")
+        print(f"[DEBUG]   Mesh vertices before conversion: {len(collision_obj.data.vertices)}")
+        print(f"[DEBUG]   Mesh polygons before conversion: {len(collision_obj.data.polygons)}")
+        print(f"[DEBUG]   Color attributes: {list(collision_obj.data.color_attributes.keys())}")
+        
+        print("[SOLLUMZ] Selecting collision mesh for converttocomposite...")
         bpy.ops.object.select_all(action='DESELECT')
         collision_obj.select_set(True)
         context.view_layer.objects.active = collision_obj
         pre_object_names = {o.name for o in bpy.data.objects}
+        
+        print("[SOLLUMZ] Executing sollumz.converttocomposite()...")
         bpy.ops.sollumz.converttocomposite()
+        print("[SOLLUMZ] converttocomposite() completed")
 
         created_objs = [o for o in bpy.data.objects if o.name not in pre_object_names]
+        print(f"[DEBUG] Created objects after converttocomposite: {[o.name for o in created_objs]}")
         bvh_obj = next((o for o in created_objs if o.name.lower().endswith(".bvh")), None)
         if bvh_obj is None:
             bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(".bvh")), None)
         if bvh_obj:
+            print(f"[BVH] Created BVH object: {bvh_obj.name}")
+            print(f"[DEBUG] BVH object type: {bvh_obj.type}")
+            if bvh_obj.type == 'MESH':
+                print(f"[DEBUG] BVH loops: {len(bvh_obj.data.loops)}, vertices: {len(bvh_obj.data.vertices)}")
+            else:
+                print(f"[DEBUG] BVH is {bvh_obj.type} (not a mesh - likely parent/empty)")
             bpy.ops.object.select_all(action='DESELECT')
             bvh_obj.select_set(True)
             context.view_layer.objects.active = bvh_obj
+            print("[SOLLUMZ] Applying flag preset to BVH...")
             try:
                 bpy.ops.sollumz.load_flag_preset()
-                print("Applied flag preset to BVH via operator.")
+                print("[SOLLUMZ] Flag preset applied successfully.")
             except Exception as op_err:
-                print(f"WARNING: Could not apply flag preset via operator: {op_err}")
+                print(f"[WARNING] Could not apply flag preset via operator: {op_err}")
 
         poly_mesh = next((o for o in bpy.data.objects if o.name.endswith(".poly_mesh") and o.parent and o.parent.name == (bvh_obj.name if bvh_obj else "")), None)
         if poly_mesh and mod_name:
-            print(f"Found poly_mesh: {poly_mesh.name}")
+            print(f"[POLY_MESH] Found poly_mesh: {poly_mesh.name}")
+            print(f"[DEBUG]   Poly_mesh loops: {len(poly_mesh.data.loops)}")
+            print(f"[DEBUG]   Poly_mesh vertices: {len(poly_mesh.data.vertices)}")
+            print(f"[DEBUG]   Poly_mesh polygons: {len(poly_mesh.data.polygons)}")
             bpy.ops.object.select_all(action='DESELECT')
             poly_mesh.select_set(True)
             context.view_layer.objects.active = poly_mesh
@@ -58,10 +81,23 @@ def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
         composite_obj = None
         if bvh_obj:
             composite_obj = bvh_obj.parent
-        print("Successfully converted collision mesh to Bound Composite")
+        
+        print("[COMPOSITE] Successfully converted collision mesh to Bound Composite")
+        if composite_obj:
+            print(f"[DEBUG] Composite object: {composite_obj.name}")
+            print(f"[DEBUG] Composite object type: {composite_obj.type}")
+            if composite_obj.type == 'MESH':
+                print(f"[DEBUG]   Loops: {len(composite_obj.data.loops) if composite_obj.data else 'N/A'}")
+            else:
+                print(f"[DEBUG] Composite is {composite_obj.type} (not mesh)")
+            print(f"[DEBUG]   Children: {[c.name for c in composite_obj.children]}")
+        print("[STAGE] convert_collision: EXIT")
+        print("="*80 + "\n")
         return composite_obj
     except Exception as e:
-        print(f"ERROR: Failed to convert collision mesh to composite - {e}")
+        print(f"[ERROR] Failed to convert collision mesh to composite - {e}")
         import traceback
         traceback.print_exc()
+        print("[STAGE] convert_collision: ERROR EXIT")
+        print("="*80 + "\n")
         return None

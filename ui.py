@@ -112,6 +112,7 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
 
 
 
+
 classes = [
     PROPCONVERTER_PT_main_panel,
 ]
@@ -119,7 +120,10 @@ classes = [
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except ValueError:
+            pass  # Already registered
 
 
 def unregister():

@@ -23,7 +23,7 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         size=4,
         min=0.0,
         max=1.0,
-        default=(1.0, 1.0, 1.0, 1.0),
+        default=(1.0, 0.0, 1.0, 1.0),
     )
 
     enable_decimate: bpy.props.BoolProperty(
@@ -135,7 +135,10 @@ classes = [
 
 def register():
     for cls in classes:
-        bpy.utils.register_class(cls)
+        try:
+            bpy.utils.register_class(cls)
+        except ValueError:
+            pass  # Already registered
     bpy.types.Scene.prop_converter = bpy.props.PointerProperty(type=PROPCONVERTER_Properties)
 
 def unregister():

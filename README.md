@@ -1,10 +1,12 @@
 # PropConverter-V 
 
-Add-on for automatic conversion of props to GTA V.
+Add-on for automatic conversion of props to GTA V with integrated Vertex Color Master tools.
 
 ## HOW TO USE
 
 Import a Mesh, select it, change the vertex color, select collision and shader materials then click to convert, after it remember to set the textures on the drawable model.
+
+**Vertex Color Master**: Advanced vertex color manipulation tools are available in the VCM panel under the Prop Converter tab (requires Vertex Paint mode).
 
 All the names will be as the original mesh.
 
@@ -39,9 +41,9 @@ You need to create a YTD with the same name as in the others.
 
 Copyright (C) 2026 LN
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](./LICENSE) for more details.
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of - Big objects auto divider and converter with non embedd collision
+- Auto Ambient Occlusion
+ be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [GNU General Public License](./LICENSE) for more details.
 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 
