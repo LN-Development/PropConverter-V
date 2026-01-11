@@ -75,9 +75,6 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
             self.report({"ERROR"}, "No YTYP selected!")
             return {"CANCELLED"}
 
-        print("=" * 50)
-        print(f"Exporting to directory: {self.directory}")
-
         # Collect format/version selections
         formats_selected = set()
         if self.export_format_native:
@@ -120,38 +117,26 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
             export_settings.target_formats = formats_selected
             export_settings.target_versions = versions_selected
             
-            print(f"Set export settings - Formats: {export_settings.target_formats}, Versions: {export_settings.target_versions}")
-            
             try:
                 # Export YTYP first
-                print("Exporting YTYP...")
                 result = bpy.ops.sollumz.export_ytyp_io(directory=self.directory)
-                if result == {"FINISHED"}:
-                    print("YTYP exported successfully")
-                else:
+                if result != {"FINISHED"}:
                     self.report({"WARNING"}, "YTYP export returned non-finished status")
                 
                 # Export Drawable (YDR)
-                print("Exporting Drawable...")
                 result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
-                if result == {"FINISHED"}:
-                    print("Drawable exported successfully")
-                else:
+                if result != {"FINISHED"}:
                     self.report({"WARNING"}, "Drawable export returned non-finished status")
                     
             finally:
                 # Restore original settings
                 export_settings.target_formats = original_formats
                 export_settings.target_versions = original_versions
-                print("Restored original export settings")
                 
         except Exception as e:
-            print(f"ERROR during export: {e}")
-            import traceback
-            traceback.print_exc()
+            print(f"[ERROR] Export failed: {e}")
             self.report({"ERROR"}, f"Export failed: {str(e)}")
             return {"CANCELLED"}
 
-        print("=" * 50)
         self.report({"INFO"}, f"Exported YTYP and Drawable to {self.directory}")
         return {"FINISHED"}

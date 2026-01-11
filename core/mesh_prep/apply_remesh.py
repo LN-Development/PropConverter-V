@@ -5,10 +5,8 @@ def apply_remesh(context, obj: bpy.types.Object, mode: str, use_smooth_shade: bo
     """Apply remesh modifier to collision mesh."""
     try:
         if not obj or obj.type != 'MESH':
-            print("ERROR: Invalid object for remesh")
+            print("[ERROR] Invalid object for remesh")
             return False
-        
-        print(f"Applying remesh modifier to {obj.name} with mode: {mode}")
         
         # Add remesh modifier
         remesh_mod = obj.modifiers.new(name="Remesh", type='REMESH')
@@ -18,20 +16,16 @@ def apply_remesh(context, obj: bpy.types.Object, mode: str, use_smooth_shade: bo
         if mode == 'blocks':
             remesh_mod.mode = 'BLOCKS'
             remesh_mod.threshold = threshold
-            print(f"Blocks mode - threshold: {threshold}")
         elif mode == 'smooth':
             remesh_mod.mode = 'SMOOTH'
             remesh_mod.threshold = threshold
-            print(f"Smooth mode - threshold: {threshold}")
         elif mode == 'sharp':
             remesh_mod.mode = 'SHARP'
             remesh_mod.threshold = threshold
-            print(f"Sharp mode - threshold: {threshold}")
         elif mode == 'voxels':
             remesh_mod.mode = 'VOXELS'
             remesh_mod.voxel_size = voxel_size
             remesh_mod.adaptivity = adaptivity
-            print(f"Voxels mode - voxel_size: {voxel_size}, adaptivity: {adaptivity}")
         
         # Apply the modifier
         bpy.ops.object.select_all(action='DESELECT')
@@ -41,11 +35,8 @@ def apply_remesh(context, obj: bpy.types.Object, mode: str, use_smooth_shade: bo
         # Apply modifier using Blender operator
         bpy.ops.object.modifier_apply(modifier=remesh_mod.name)
         
-        print(f"Successfully applied remesh modifier ({mode}) to {obj.name}")
         return True
         
     except Exception as e:
-        print(f"ERROR: Failed to apply remesh modifier - {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"[ERROR] Failed to apply remesh modifier - {e}")
         return False

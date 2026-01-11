@@ -5,32 +5,23 @@ import importlib
 def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
     """Convert collision mesh to composite and apply collision materials."""
     try:
-        print("\n" + "="*80)
-        print("[STAGE] convert_collision: ENTRY")
-        print(f"[DEBUG] Input collision object: {collision_obj.name}")
-        print(f"[DEBUG]   Mesh loops before conversion: {len(collision_obj.data.loops)}")
-        print(f"[DEBUG]   Mesh vertices before conversion: {len(collision_obj.data.vertices)}")
-        print(f"[DEBUG]   Mesh polygons before conversion: {len(collision_obj.data.polygons)}")
-        print(f"[DEBUG]   Color attributes: {list(collision_obj.data.color_attributes.keys())}")
-        
-        print("[SOLLUMZ] Selecting collision mesh for converttocomposite...")
+       
         bpy.ops.object.select_all(action='DESELECT')
         collision_obj.select_set(True)
         context.view_layer.objects.active = collision_obj
         pre_object_names = {o.name for o in bpy.data.objects}
         
-        print("[SOLLUMZ] Executing sollumz.converttocomposite()...")
+      
         bpy.ops.sollumz.converttocomposite()
-        print("[SOLLUMZ] converttocomposite() completed")
+  
 
         created_objs = [o for o in bpy.data.objects if o.name not in pre_object_names]
-        print(f"[DEBUG] Created objects after converttocomposite: {[o.name for o in created_objs]}")
+   
         bvh_obj = next((o for o in created_objs if o.name.lower().endswith(".bvh")), None)
         if bvh_obj is None:
             bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(".bvh")), None)
         if bvh_obj:
-            print(f"[BVH] Created BVH object: {bvh_obj.name}")
-            print(f"[DEBUG] BVH object type: {bvh_obj.type}")
+   
             if bvh_obj.type == 'MESH':
                 print(f"[DEBUG] BVH loops: {len(bvh_obj.data.loops)}, vertices: {len(bvh_obj.data.vertices)}")
             else:

@@ -21,11 +21,11 @@ def register():
     properties.register()
     operators.register()
     ui.register()
-    print("PropConverter-V extension registered successfully!")
+
 
 
 def unregister():
     ui.unregister()
     operators.unregister()
     properties.unregister()
-    print("PropConverter-V extension unregistered!")
+
