@@ -14,6 +14,10 @@ YTYP, YDR and YTD.
 
 You need to create a YTD with the same name as in the others.
 
+## Discord
+
+[Discord](https://discord.gg/SHkvymn6gN)
+
 ## Dependencies
 
 [Sollumz](https://github.com/Sollumz/Sollumz) 2.8.0
