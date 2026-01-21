@@ -12,12 +12,16 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 import bpy
+from . import i18n
 from . import properties
 from . import operators
 from . import ui
 
 
 def register():   
+    # Initialize i18n system first
+    i18n.initialize()
+    
     properties.register()
     operators.register()
     ui.register()

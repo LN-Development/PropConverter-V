@@ -1,5 +1,6 @@
 import bpy
 from ..prop_converter import convertToGtaV
+from .. import i18n
 
 
 class PROPCONVERTER_OT_convert_to_gtav(bpy.types.Operator):
@@ -11,26 +12,27 @@ class PROPCONVERTER_OT_convert_to_gtav(bpy.types.Operator):
     def execute(self, context):
         # Check if in Object Mode
         if context.mode != 'OBJECT':
-            self.report({"ERROR"}, "Please switch to Object Mode!")
+            self.report({"ERROR"}, i18n.t("messages.error.switch_to_object_mode"))
             return {"FINISHED"}
         
         if context.active_object is None:
-            self.report({"ERROR"}, "Please select an object!")
+            self.report({"ERROR"}, i18n.t("messages.error.select_object"))
             return {"FINISHED"}
         
         obj = context.active_object
         
         if obj.type != "MESH":
-            self.report({"ERROR"}, f"Selected object is not a mesh!")
+            self.report({"ERROR"}, i18n.t("messages.error.not_a_mesh"))
             return {"FINISHED"}
         
         if not obj.select_get():
-            self.report({"ERROR"}, "Please select a mesh to continue!")
+            self.report({"ERROR"}, i18n.t("messages.error.select_mesh"))
             return {"FINISHED"}
         
         if convertToGtaV(context):
-            self.report({"INFO"}, "Prop converted successfully!")
+            self.report({"INFO"}, i18n.t("messages.info.conversion_success"))
         else:
-            self.report({"ERROR"}, "Failed to convert prop")
+            self.report({"ERROR"}, i18n.t("messages.error.conversion_failed"))
         
         return {"FINISHED"}
+

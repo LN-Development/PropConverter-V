@@ -1,4 +1,5 @@
 import bpy
+from .. import i18n
 
 
 class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
@@ -43,18 +44,18 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
         row = layout.row(align=False)
         
         # Format column
-        col = row.column(align=True, heading="Format")
+        col = row.column(align=True, heading=i18n.t("operators.export.format_heading"))
         sub = col.row(align=True)
-        sub.prop(self, "export_format_native", text="Native", toggle=True)
+        sub.prop(self, "export_format_native", text=i18n.t("operators.export.format_native"), toggle=True)
         sub = col.row(align=True)
-        sub.prop(self, "export_format_xml", text="CodeWalker XML", toggle=True)
+        sub.prop(self, "export_format_xml", text=i18n.t("operators.export.format_xml"), toggle=True)
 
         # Version column
-        col = row.column(align=True, heading="Version")
+        col = row.column(align=True, heading=i18n.t("operators.export.version_heading"))
         sub = col.row(align=True)
-        sub.prop(self, "target_version_gen8", text="Gen 8", toggle=True)
+        sub.prop(self, "target_version_gen8", text=i18n.t("operators.export.version_gen8"), toggle=True)
         sub = col.row(align=True)
-        sub.prop(self, "target_version_gen9", text="Gen 9", toggle=True)
+        sub.prop(self, "target_version_gen9", text=i18n.t("operators.export.version_gen9"), toggle=True)
 
     def invoke(self, context, event):
         context.window_manager.fileselect_add(self)
@@ -62,17 +63,17 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
 
     def execute(self, context):
         if not self.directory:
-            self.report({"ERROR"}, "No directory selected!")
+            self.report({"ERROR"}, i18n.t("messages.error.no_directory"))
             return {"CANCELLED"}
 
         # Check if there's a YTYP to export
         if len(context.scene.ytyps) == 0:
-            self.report({"ERROR"}, "No YTYP found! Please convert a prop first.")
+            self.report({"ERROR"}, i18n.t("messages.error.no_ytyp"))
             return {"CANCELLED"}
 
         # Check if there's a selected YTYP
         if context.scene.ytyp_index < 0 or context.scene.ytyp_index >= len(context.scene.ytyps):
-            self.report({"ERROR"}, "No YTYP selected!")
+            self.report({"ERROR"}, i18n.t("messages.error.no_ytyp_selected"))
             return {"CANCELLED"}
 
         # Collect format/version selections
@@ -89,10 +90,10 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
             versions_selected.add('GEN9')
 
         if not formats_selected:
-            self.report({"ERROR"}, "Please select at least one export format!")
+            self.report({"ERROR"}, i18n.t("messages.error.no_format"))
             return {"CANCELLED"}
         if not versions_selected:
-            self.report({"ERROR"}, "Please select at least one target version!")
+            self.report({"ERROR"}, i18n.t("messages.error.no_version"))
             return {"CANCELLED"}
 
         # Get Sollumz preferences and temporarily set export options
@@ -105,7 +106,7 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                     break
             
             if sollumz_prefs is None:
-                self.report({"ERROR"}, "Sollumz addon not found. Please ensure it's installed and enabled.")
+                self.report({"ERROR"}, i18n.t("messages.error.sollumz_addon_not_found"))
                 return {"CANCELLED"}
             
             # Store original settings to restore later
@@ -121,12 +122,12 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                 # Export YTYP first
                 result = bpy.ops.sollumz.export_ytyp_io(directory=self.directory)
                 if result != {"FINISHED"}:
-                    self.report({"WARNING"}, "YTYP export returned non-finished status")
+                    self.report({"WARNING"}, i18n.t("messages.warning.ytyp_export_warning"))
                 
                 # Export Drawable (YDR)
                 result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
                 if result != {"FINISHED"}:
-                    self.report({"WARNING"}, "Drawable export returned non-finished status")
+                    self.report({"WARNING"}, i18n.t("messages.warning.drawable_export_warning"))
                     
             finally:
                 # Restore original settings
@@ -135,8 +136,8 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                 
         except Exception as e:
             print(f"[ERROR] Export failed: {e}")
-            self.report({"ERROR"}, f"Export failed: {str(e)}")
+            self.report({"ERROR"}, i18n.t("messages.error.export_failed", error=str(e)))
             return {"CANCELLED"}
 
-        self.report({"INFO"}, f"Exported YTYP and Drawable to {self.directory}")
+        self.report({"INFO"}, i18n.t("messages.info.export_success", directory=self.directory))
         return {"FINISHED"}

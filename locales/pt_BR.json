@@ -1,0 +1,189 @@
+{
+    "language_name": "Português (Brasil)",
+    "ui": {
+        "panel_title": "PropConverter-V",
+        "convert_button": "Converter para GTA V",
+        "export_button": "Exportar YTYP e YDR",
+        "vertex_color": "Cor dos Vértices",
+        "auto_texture_from_mesh_name": "Textura Automática do Nome da Malha",
+        "collision_mesh_settings": "Configurações da Malha de Colisão",
+        "enable_decimate": "Ativar Decimação",
+        "decimate_type": "Tipo",
+        "decimate_ratio": "Proporção",
+        "decimate_iterations": "Iterações",
+        "decimate_use_dissolve": "Usar Dissolução",
+        "decimate_angle": "Ângulo",
+        "enable_remesh": "Ativar Remalhagem",
+        "remesh_mode": "Modo",
+        "remesh_smooth_shading": "Sombreamento Suave",
+        "remesh_threshold": "Limiar",
+        "remesh_voxel_size": "Tamanho do Voxel",
+        "remesh_adaptivity": "Adaptabilidade",
+        "shader_material": "Material do Shader",
+        "collision_material": "Material de Colisão",
+        "ytyp_section": "YTYP",
+        "archetype_section": "Arquétipo",
+        "no_ytyps": "Nenhum YTYP",
+        "install_sollumz": "Instale e ative o Sollumz para escolher shaders",
+        "language_setting": "Idioma"
+    },
+    "properties": {
+        "original_mesh": {
+            "name": "Malha Original",
+            "description": "Referência ao objeto de malha original"
+        },
+        "collision_mesh": {
+            "name": "Malha de Colisão",
+            "description": "Referência ao objeto de malha de colisão (com sufixo 'col')"
+        },
+        "vertex_color": {
+            "name": "Cor dos Vértices",
+            "description": "Cor usada para pintar vértices na malha original"
+        },
+        "enable_decimate": {
+            "name": "Ativar Decimação",
+            "description": "Aplicar modificador de decimação à malha de colisão para reduzir a contagem de polígonos"
+        },
+        "decimate_type": {
+            "name": "Tipo de Decimação",
+            "description": "Tipo de decimação a aplicar",
+            "items": {
+                "collapse": {
+                    "name": "Colapsar",
+                    "description": "Colapsar arestas"
+                },
+                "unsubdiv": {
+                    "name": "Dessubdividir",
+                    "description": "Remover superfícies de subdivisão"
+                },
+                "planar": {
+                    "name": "Planar",
+                    "description": "Remover faces planares"
+                }
+            }
+        },
+        "decimate_ratio": {
+            "name": "Proporção de Decimação",
+            "description": "Proporção de faces a manter (para modo Colapsar)"
+        },
+        "decimate_iterations": {
+            "name": "Iterações de Decimação",
+            "description": "Número de vezes para dessubdividir a malha de colisão (para modo Dessubdividir)"
+        },
+        "decimate_use_dissolve": {
+            "name": "Usar Dissolução",
+            "description": "Dissolver arestas ao dessubdividir (para modo Dessubdividir)"
+        },
+        "decimate_planar_angle": {
+            "name": "Ângulo Planar",
+            "description": "Limiar de ângulo para decimação planar (para modo Planar)"
+        },
+        "enable_remesh": {
+            "name": "Ativar Remalhagem",
+            "description": "Aplicar modificador de remalhagem à malha de colisão"
+        },
+        "remesh_mode": {
+            "name": "Modo de Remalhagem",
+            "description": "Tipo de remalhagem a aplicar",
+            "items": {
+                "blocks": {
+                    "name": "Blocos",
+                    "description": "Remalhagem em blocos"
+                },
+                "smooth": {
+                    "name": "Suave",
+                    "description": "Remalhagem suave"
+                },
+                "sharp": {
+                    "name": "Afiada",
+                    "description": "Remalhagem afiada"
+                },
+                "voxels": {
+                    "name": "Voxels",
+                    "description": "Remalhagem baseada em voxels"
+                }
+            }
+        },
+        "remesh_use_smooth_shade": {
+            "name": "Sombreamento Suave",
+            "description": "Usar sombreamento suave para remalhagem"
+        },
+        "remesh_threshold": {
+            "name": "Limiar",
+            "description": "Limiar para modos de remalhagem blocos, suave e afiada"
+        },
+        "remesh_voxel_size": {
+            "name": "Tamanho do Voxel",
+            "description": "Tamanho dos voxels para remalhagem em modo voxel (menor = maior detalhe)"
+        },
+        "remesh_adaptivity": {
+            "name": "Adaptabilidade",
+            "description": "Adaptabilidade para remalhagem voxel (maior = mais redução)"
+        },
+        "auto_texture_from_mesh_name": {
+            "name": "Textura Automática do Nome da Malha",
+            "description": "Após a conversão, definir as texturas de cada material para arquivos externos nomeados a partir da malha original (ex: mesh0_diffuse.dds)"
+        },
+        "language": {
+            "name": "Idioma",
+            "description": "Idioma da interface"
+        }
+    },
+    "operators": {
+        "convert": {
+            "label": "Converter para GTA V",
+            "description": "Converter objeto selecionado para GTA V"
+        },
+        "export": {
+            "label": "Exportar YTYP e YDR",
+            "description": "Exportar o YTYP e YDR criados para o diretório selecionado",
+            "output_directory": "Diretório de saída",
+            "output_directory_description": "Selecione o diretório de saída para exportação",
+            "format_native": "Nativo",
+            "format_native_description": "Exportar em formato binário nativo",
+            "format_xml": "CodeWalker XML",
+            "format_xml_description": "Exportar como CodeWalker XML",
+            "version_gen8": "Gen 8",
+            "version_gen8_description": "GTAV Legacy",
+            "version_gen9": "Gen 9",
+            "version_gen9_description": "GTAV Enhanced",
+            "format_heading": "Formato",
+            "version_heading": "Versão"
+        }
+    },
+    "messages": {
+        "error": {
+            "no_object_selected": "Nenhum objeto ativo selecionado",
+            "not_mesh": "Objeto não é uma malha (tipo: {type})",
+            "not_selected": "Contorno do objeto não está selecionado",
+            "sollumz_not_found": "Addon Sollumz não está instalado ou não está no sys.path",
+            "duplicate_failed": "Falha ao duplicar e preparar malha",
+            "collision_failed": "Falha na conversão de colisão",
+            "drawable_failed": "Falha na conversão do drawable",
+            "material_failed": "Falha na conversão de material",
+            "ytyp_failed": "Falha na criação do YTYP",
+            "archetype_failed": "Falha na criação do arquétipo",
+            "switch_to_object_mode": "Por favor, mude para o Modo Objeto!",
+            "select_object": "Por favor, selecione um objeto!",
+            "not_a_mesh": "Objeto selecionado não é uma malha!",
+            "select_mesh": "Por favor, selecione uma malha para continuar!",
+            "conversion_failed": "Falha ao converter prop",
+            "no_directory": "Nenhum diretório selecionado!",
+            "no_ytyp": "Nenhum YTYP encontrado! Por favor, converta um prop primeiro.",
+            "no_ytyp_selected": "Nenhum YTYP selecionado!",
+            "no_format": "Por favor, selecione pelo menos um formato de exportação!",
+            "no_version": "Por favor, selecione pelo menos uma versão de destino!",
+            "sollumz_addon_not_found": "Addon Sollumz não encontrado. Por favor, certifique-se de que está instalado e ativado.",
+            "export_failed": "Falha na exportação: {error}"
+        },
+        "warning": {
+            "original_mesh_not_found": "Objeto de malha original não encontrado",
+            "ytyp_export_warning": "Exportação YTYP retornou status não finalizado",
+            "drawable_export_warning": "Exportação Drawable retornou status não finalizado"
+        },
+        "info": {
+            "conversion_success": "Prop convertido com sucesso!",
+            "export_success": "YTYP e Drawable exportados para {directory}"
+        }
+    }
+}

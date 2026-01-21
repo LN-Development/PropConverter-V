@@ -1,0 +1,189 @@
+{
+    "language_name": "English",
+    "ui": {
+        "panel_title": "PropConverter-V",
+        "convert_button": "Convert to GTA V",
+        "export_button": "Export YTYP and YDR",
+        "vertex_color": "Vertex Color",
+        "auto_texture_from_mesh_name": "Auto Texture from Mesh Name",
+        "collision_mesh_settings": "Collision Mesh Settings",
+        "enable_decimate": "Enable Decimate",
+        "decimate_type": "Type",
+        "decimate_ratio": "Ratio",
+        "decimate_iterations": "Iterations",
+        "decimate_use_dissolve": "Use Dissolve",
+        "decimate_angle": "Angle",
+        "enable_remesh": "Enable Remesh",
+        "remesh_mode": "Mode",
+        "remesh_smooth_shading": "Smooth Shading",
+        "remesh_threshold": "Threshold",
+        "remesh_voxel_size": "Voxel Size",
+        "remesh_adaptivity": "Adaptivity",
+        "shader_material": "Shader Material",
+        "collision_material": "Collision Material",
+        "ytyp_section": "YTYP",
+        "archetype_section": "Archetype",
+        "no_ytyps": "No YTYPs",
+        "install_sollumz": "Install & enable Sollumz to pick shaders",
+        "language_setting": "Language"
+    },
+    "properties": {
+        "original_mesh": {
+            "name": "Original Mesh",
+            "description": "Reference to the original mesh object"
+        },
+        "collision_mesh": {
+            "name": "Collision Mesh",
+            "description": "Reference to the collision mesh object (with 'col' suffix)"
+        },
+        "vertex_color": {
+            "name": "Vertex Color",
+            "description": "Color used to paint vertices on the original mesh"
+        },
+        "enable_decimate": {
+            "name": "Enable Decimate",
+            "description": "Apply decimate modifier to collision mesh to reduce polygon count"
+        },
+        "decimate_type": {
+            "name": "Decimate Type",
+            "description": "Type of decimation to apply",
+            "items": {
+                "collapse": {
+                    "name": "Collapse",
+                    "description": "Collapse edges"
+                },
+                "unsubdiv": {
+                    "name": "Un-subdivide",
+                    "description": "Remove subdivision surfaces"
+                },
+                "planar": {
+                    "name": "Planar",
+                    "description": "Remove planar faces"
+                }
+            }
+        },
+        "decimate_ratio": {
+            "name": "Decimate Ratio",
+            "description": "Ratio of faces to keep (for Collapse mode)"
+        },
+        "decimate_iterations": {
+            "name": "Decimate Iterations",
+            "description": "Number of times to un-subdivide the collision mesh (for Un-subdivide mode)"
+        },
+        "decimate_use_dissolve": {
+            "name": "Use Dissolve",
+            "description": "Dissolve edges when un-subdividing (for Un-subdivide mode)"
+        },
+        "decimate_planar_angle": {
+            "name": "Planar Angle",
+            "description": "Angle threshold for planar decimation (for Planar mode)"
+        },
+        "enable_remesh": {
+            "name": "Enable Remesh",
+            "description": "Apply remesh modifier to collision mesh"
+        },
+        "remesh_mode": {
+            "name": "Remesh Mode",
+            "description": "Type of remesh to apply",
+            "items": {
+                "blocks": {
+                    "name": "Blocks",
+                    "description": "Blocky remesh"
+                },
+                "smooth": {
+                    "name": "Smooth",
+                    "description": "Smooth remesh"
+                },
+                "sharp": {
+                    "name": "Sharp",
+                    "description": "Sharp remesh"
+                },
+                "voxels": {
+                    "name": "Voxels",
+                    "description": "Voxel-based remesh"
+                }
+            }
+        },
+        "remesh_use_smooth_shade": {
+            "name": "Smooth Shading",
+            "description": "Use smooth shading for remesh"
+        },
+        "remesh_threshold": {
+            "name": "Threshold",
+            "description": "Threshold for blocks, smooth, and sharp remesh modes"
+        },
+        "remesh_voxel_size": {
+            "name": "Voxel Size",
+            "description": "Size of voxels for voxel mode remesh (smaller = higher detail)"
+        },
+        "remesh_adaptivity": {
+            "name": "Adaptivity",
+            "description": "Adaptivity for voxel remesh (higher = more reduction)"
+        },
+        "auto_texture_from_mesh_name": {
+            "name": "Auto Texture from Mesh Name",
+            "description": "After conversion, set each material's textures to external files named from the original mesh (e.g., mesh0_diffuse.dds)"
+        },
+        "language": {
+            "name": "Language",
+            "description": "Interface language"
+        }
+    },
+    "operators": {
+        "convert": {
+            "label": "Convert to GTA V",
+            "description": "Convert selected object to GTA V"
+        },
+        "export": {
+            "label": "Export YTYP and YDR",
+            "description": "Export the created YTYP and YDR to selected directory",
+            "output_directory": "Output directory",
+            "output_directory_description": "Select export output directory",
+            "format_native": "Native",
+            "format_native_description": "Export in native binary format",
+            "format_xml": "CodeWalker XML",
+            "format_xml_description": "Export as CodeWalker XML",
+            "version_gen8": "Gen 8",
+            "version_gen8_description": "GTAV Legacy",
+            "version_gen9": "Gen 9",
+            "version_gen9_description": "GTAV Enhanced",
+            "format_heading": "Format",
+            "version_heading": "Version"
+        }
+    },
+    "messages": {
+        "error": {
+            "no_object_selected": "No active object selected",
+            "not_mesh": "Object is not a mesh (type: {type})",
+            "not_selected": "Object outline is not selected",
+            "sollumz_not_found": "Sollumz addon is not installed or not in sys.path",
+            "duplicate_failed": "Failed to duplicate and prepare mesh",
+            "collision_failed": "Collision conversion failed",
+            "drawable_failed": "Drawable conversion failed",
+            "material_failed": "Material conversion failed",
+            "ytyp_failed": "YTYP creation failed",
+            "archetype_failed": "Archetype creation failed",
+            "switch_to_object_mode": "Please switch to Object Mode!",
+            "select_object": "Please select an object!",
+            "not_a_mesh": "Selected object is not a mesh!",
+            "select_mesh": "Please select a mesh to continue!",
+            "conversion_failed": "Failed to convert prop",
+            "no_directory": "No directory selected!",
+            "no_ytyp": "No YTYP found! Please convert a prop first.",
+            "no_ytyp_selected": "No YTYP selected!",
+            "no_format": "Please select at least one export format!",
+            "no_version": "Please select at least one target version!",
+            "sollumz_addon_not_found": "Sollumz addon not found. Please ensure it's installed and enabled.",
+            "export_failed": "Export failed: {error}"
+        },
+        "warning": {
+            "original_mesh_not_found": "Original mesh object not found",
+            "ytyp_export_warning": "YTYP export returned non-finished status",
+            "drawable_export_warning": "Drawable export returned non-finished status"
+        },
+        "info": {
+            "conversion_success": "Prop converted successfully!",
+            "export_success": "Exported YTYP and Drawable to {directory}"
+        }
+    }
+}

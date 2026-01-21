@@ -9,6 +9,7 @@ from .core.conversion import (
     create_archetype
 )
 from .core.mesh_prep.paint_vertex_colors import paint_vertex_colors
+from . import i18n
 
 
 def convertToGtaV(context) -> bool:
@@ -21,20 +22,20 @@ def convertToGtaV(context) -> bool:
     # Pre-flight checks
     obj = context.active_object
     if obj is None:
-        print("[ERROR] No active object selected")
+        print(f"[ERROR] {i18n.t('messages.error.no_object_selected')}")
         return False
 
     if obj.type != "MESH":
-        print(f"[ERROR] Object is not a mesh (type: {obj.type})")
+        print(f"[ERROR] {i18n.t('messages.error.not_mesh', type=obj.type)}")
         return False
 
     if not obj.select_get():
-        print("[ERROR] Object outline is not selected")
+        print(f"[ERROR] {i18n.t('messages.error.not_selected')}")
         return False
 
     mod_name = resolve_sollumz_mod_name()
     if mod_name is None:
-        print("[ERROR] Sollumz addon is not installed or not in sys.path")
+        print(f"[ERROR] {i18n.t('messages.error.sollumz_not_found')}")
         return False
 
     # Set geometry origin to world origin and reset transforms
@@ -47,17 +48,17 @@ def convertToGtaV(context) -> bool:
 
     original_name, collision_obj = duplicate_and_prepare_mesh(context, obj)
     if not collision_obj:
-        print("[ERROR] Failed to duplicate and prepare mesh")
+        print(f"[ERROR] {i18n.t('messages.error.duplicate_failed')}")
         return False
 
     composite_obj = convert_collision(context, collision_obj, mod_name)
     if composite_obj is None:
-        print("[ERROR] Collision conversion failed")
+        print(f"[ERROR] {i18n.t('messages.error.collision_failed')}")
         return False
 
     model_objs, drawable_parent = convert_drawable(context, obj, composite_obj)
     if not model_objs:
-        print("[ERROR] Drawable conversion failed")
+        print(f"[ERROR] {i18n.t('messages.error.drawable_failed')}")
         return False
 
     # Get original mesh object
@@ -66,7 +67,7 @@ def convertToGtaV(context) -> bool:
         original_mesh_obj = original_mesh_obj.original_mesh
 
     if not convert_materials(context, model_objs, mod_name):
-        print("[ERROR] Material conversion failed")
+        print(f"[ERROR] {i18n.t('messages.error.material_failed')}")
         return False
 
     # Apply auto-color painting AFTER conversion
@@ -74,14 +75,15 @@ def convertToGtaV(context) -> bool:
         paint_col = getattr(getattr(context.scene, "prop_converter", None), "vertex_color", (1.0, 1.0, 1.0, 1.0))
         paint_vertex_colors(original_mesh_obj, None, color=tuple(paint_col))
     else:
-        print("[WARNING] Original mesh object not found")
+        print(f"[WARNING] {i18n.t('messages.warning.original_mesh_not_found')}")
 
     if not create_ytyp(context, original_name):
-        print("[ERROR] YTYP creation failed")
+        print(f"[ERROR] {i18n.t('messages.error.ytyp_failed')}")
         return False
 
     if not create_archetype(context, obj, mod_name, original_name):
-        print("[ERROR] Archetype creation failed")
+        print(f"[ERROR] {i18n.t('messages.error.archetype_failed')}")
         return False
     
     return True
+

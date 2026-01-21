@@ -1,8 +1,25 @@
 import bpy
 from bpy.props import PointerProperty
+from . import i18n
+
+
+def update_language(self, context):
+    """Update language when user changes preference"""
+    i18n.set_language(self.language)
 
 
 class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
+
+    language: bpy.props.EnumProperty(
+        name="Language",
+        description="Interface language",
+        items=[
+            ('pt_BR', "Português (Brasil)", "Portuguese (Brazilian)"),
+            ('en_US', "English", "English"),
+        ],
+        update=update_language,
+        default='pt_BR',
+    )
 
     original_mesh: PointerProperty(
         name="Original Mesh",
