@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "propconverterv"
-version = "1.0.0"
+version = "1.2.0"
 name = "PropConverter-V"
 tagline = "Addon for automated prop conversion in GTA V that rely's on Sollumz extentsion"
 maintainer = "LN"
