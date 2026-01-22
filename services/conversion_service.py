@@ -107,7 +107,7 @@ class ConversionService:
             return False
         
         # Stage 6: Convert materials
-        if not convert_materials(context, model_objs, mod_name):
+        if not convert_materials(context, model_objs, mod_name, original_name):
             logger.log_error('messages.error.material_failed', operator=operator)
             return False
         

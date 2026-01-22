@@ -1,5 +1,6 @@
 import bpy
 import importlib
+from ... import constants
 
 
 def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
@@ -17,9 +18,9 @@ def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
 
         created_objs = [o for o in bpy.data.objects if o.name not in pre_object_names]
    
-        bvh_obj = next((o for o in created_objs if o.name.lower().endswith(".bvh")), None)
+        bvh_obj = next((o for o in created_objs if o.name.lower().endswith(constants.BVH_SUFFIX)), None)
         if bvh_obj is None:
-            bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(".bvh")), None)
+            bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(constants.BVH_SUFFIX)), None)
         if bvh_obj:
    
             if bvh_obj.type == 'MESH':
@@ -36,7 +37,7 @@ def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
             except Exception as op_err:
                 print(f"[WARNING] Could not apply flag preset via operator: {op_err}")
 
-        poly_mesh = next((o for o in bpy.data.objects if o.name.endswith(".poly_mesh") and o.parent and o.parent.name == (bvh_obj.name if bvh_obj else "")), None)
+        poly_mesh = next((o for o in bpy.data.objects if o.name.endswith(constants.POLY_MESH_SUFFIX) and o.parent and o.parent.name == (bvh_obj.name if bvh_obj else "")), None)
         if poly_mesh and mod_name:
             print(f"[POLY_MESH] Found poly_mesh: {poly_mesh.name}")
             print(f"[DEBUG]   Poly_mesh loops: {len(poly_mesh.data.loops)}")

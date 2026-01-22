@@ -1,5 +1,6 @@
 import bpy
 import re
+from ... import constants
 
 
 def set_textures_from_original_name(context, model_objs, original_name: str) -> bool:
@@ -37,7 +38,7 @@ def set_textures_from_original_name(context, model_objs, original_name: str) -> 
                     # Sanitize: remove non-alphanumeric, collapse underscores, strip common suffixes like "sampler"
                     label = re.sub(r"[^a-z0-9]+", "_", raw_label).strip("_")
                     label = re.sub(r"_sampler$", "", label)
-                    texture_relpath = f"//{base_name}_{label}.dds"
+                    texture_relpath = f"//{base_name}_{label}{constants.TEXTURE_EXTENSION}"
                     # Force external file reference
                     if n.image is None:
                         # Create a minimal image datablock so we can set a filepath
