@@ -4,6 +4,7 @@ from .clear_uv_maps import clear_uv_maps
 from .paint_vertex_colors import paint_vertex_colors
 from .apply_decimate import apply_decimate
 from .apply_remesh import apply_remesh
+from ... import constants
 
 
 def duplicate_and_prepare_mesh(context, obj: bpy.types.Object):
@@ -52,7 +53,7 @@ def duplicate_and_prepare_mesh(context, obj: bpy.types.Object):
     rename_uv_maps_sequential(obj.data)
     clear_uv_maps(new_obj.data)
 
-    new_obj.name = f"{original_name}col"
+    new_obj.name = f"{original_name}{constants.COLLISION_SUFFIX}"
     context.scene.prop_converter.collision_mesh = new_obj
 
     # Apply decimate modifier if enabled

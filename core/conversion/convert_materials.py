@@ -1,18 +1,29 @@
 import bpy
-import importlib
+from ...sollumz_integration import SollumzIntegration
+from ... import constants
 
 
 def convert_materials(context, model_objs, mod_name: str) -> bool:
     """Convert materials on model objects to the selected shader."""
     try:
-        shadermats = importlib.import_module(f"{mod_name}.ydr.shader_materials").shadermats
+        sollumz = SollumzIntegration.get_instance()
+        shadermats = sollumz.get_shader_materials()
+        
+        if not shadermats:
+            print("[ERROR] Could not load Sollumz shader materials")
+            return False
+        
         wm = context.window_manager
         selected_idx = getattr(wm, "sz_shader_material_index", -1)
         
         if not (0 <= selected_idx < len(shadermats)):
-            selected_idx = next((i for i, shader in enumerate(shadermats) if shader.value == "default.sps"), None)
+            selected_idx = next(
+                (i for i, shader in enumerate(shadermats) 
+                 if shader.value == constants.DEFAULT_SHADER_NAME), 
+                None
+            )
             if selected_idx is None:
-                print("[ERROR] Could not find default.sps shader")
+                print(f"[ERROR] Could not find {constants.DEFAULT_SHADER_NAME} shader")
                 return False
             wm.sz_shader_material_index = selected_idx
 

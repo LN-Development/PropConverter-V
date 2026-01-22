@@ -1,11 +1,17 @@
 import bpy
-import importlib
+from ...sollumz_integration import SollumzIntegration
 
 
 def create_archetype(context, obj, mod_name: str, original_name: str):
     try:
         print(f"Creating archetype from drawable: {obj.name}")
-        sollumz_props = importlib.import_module(f"{mod_name}.sollumz_properties")
+        sollumz = SollumzIntegration.get_instance()
+        sollumz_props = sollumz.get_sollumz_properties()
+        
+        if not sollumz_props:
+            print("[ERROR] Could not load Sollumz properties")
+            return False
+        
         ArchetypeType = sollumz_props.ArchetypeType
         SollumType = sollumz_props.SollumType
 

@@ -1,4 +1,5 @@
 import bpy
+from ... import constants
 
 
 def paint_vertex_colors(original_obj: bpy.types.Object, collision_obj: bpy.types.Object, color=(1.0, 1.0, 1.0, 1.0)) -> bool:
@@ -9,7 +10,7 @@ def paint_vertex_colors(original_obj: bpy.types.Object, collision_obj: bpy.types
             mesh = original_obj.data
             loops = len(mesh.loops)
             if loops > 0:
-                attr_name = "Color 1"  # Sollumz expects this naming
+                attr_name = constants.VERTEX_COLOR_ATTRIBUTE_NAME
                 
                 # Create or get color attribute with Face Corner and Byte Color
                 if attr_name in mesh.color_attributes:

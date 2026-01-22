@@ -1,6 +1,7 @@
 import bpy
 from bpy.props import PointerProperty
 from . import i18n
+from . import constants
 
 
 def update_language(self, context):
@@ -14,45 +15,24 @@ def update_language(self, context):
 
 
 def update_default_flags(self, context):
-    """Apply default collision flags when use_default_flags is enabled"""
+    """Apply default collision flags when use_default_flags is enabled.
+    
+    This function uses constants to eliminate magic values and uses
+    iteration to reduce code duplication (DRY principle).
+    """
     if self.use_default_flags:
-        # Set the three default flags
-        self.collision_flags.not_climbable = True
-        self.collision_flags.not_cover = True
-        self.collision_flags.too_steep_for_player = True
+        # Set default flags from constants
+        for flag_name, flag_value in constants.DEFAULT_COLLISION_FLAGS.items():
+            setattr(self.collision_flags, flag_name, flag_value)
         
-        # Clear all other flags
-        self.collision_flags.stairs = False
-        self.collision_flags.see_through = False
-        self.collision_flags.shoot_through = False
-        self.collision_flags.walkable_path = False
-        self.collision_flags.no_cam_collision = False
-        self.collision_flags.shoot_through_fx = False
-        self.collision_flags.no_decal = False
-        self.collision_flags.no_navmesh = False
-        self.collision_flags.no_ragdoll = False
-        self.collision_flags.vehicle_wheel = False
-        self.collision_flags.no_ptfx = False
-        self.collision_flags.no_network_spawn = False
-        self.collision_flags.no_cam_collision_allow_clipping = False
+        # Clear all non-default flags
+        for flag_name in constants.ALL_COLLISION_FLAGS:
+            if flag_name not in constants.DEFAULT_COLLISION_FLAGS:
+                setattr(self.collision_flags, flag_name, False)
     else:
-        # When disabled, clear ALL flags (including the default ones)
-        self.collision_flags.stairs = False
-        self.collision_flags.not_climbable = False
-        self.collision_flags.see_through = False
-        self.collision_flags.shoot_through = False
-        self.collision_flags.not_cover = False
-        self.collision_flags.walkable_path = False
-        self.collision_flags.no_cam_collision = False
-        self.collision_flags.shoot_through_fx = False
-        self.collision_flags.no_decal = False
-        self.collision_flags.no_navmesh = False
-        self.collision_flags.no_ragdoll = False
-        self.collision_flags.vehicle_wheel = False
-        self.collision_flags.no_ptfx = False
-        self.collision_flags.too_steep_for_player = False
-        self.collision_flags.no_network_spawn = False
-        self.collision_flags.no_cam_collision_allow_clipping = False
+        # When disabled, clear ALL flags
+        for flag_name in constants.ALL_COLLISION_FLAGS:
+            setattr(self.collision_flags, flag_name, False)
 
 
 class CollisionFlagsProperties(bpy.types.PropertyGroup):
