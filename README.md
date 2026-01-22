@@ -30,7 +30,6 @@ You need to create a YTD with the same name as in the others.
 
 ## TO-DO
 
-- Collision Flag Configuration on the panel
 - Big objects auto divider and converter with non embedd collision
 - Auto Ambient Occlusion
 
