@@ -1,0 +1,192 @@
+{
+    "language_name": "Español",
+    "ui": {
+        "panel_title": "PropConverter-V",
+        "convert_button": "Convertir a GTA V",
+        "export_button": "Exportar YTYP y YDR",
+        "vertex_color": "Color de Vértices",
+        "auto_texture_from_mesh_name": "Textura Automática usando Nombre de Mesh",
+        "collision_mesh_settings": "Configuración de Mesh de Colisión",
+        "enable_decimate": "Activar Decimate",
+        "decimate_type": "Tipo",
+        "decimate_ratio": "Proporción",
+        "decimate_iterations": "Iteraciones",
+        "decimate_use_dissolve": "Usar Dissolve",
+        "decimate_angle": "Ángulo",
+        "enable_remesh": "Activar Remesh",
+        "remesh_mode": "Modo",
+        "remesh_smooth_shading": "Smooth Shading",
+        "remesh_threshold": "Threshold",
+        "remesh_voxel_size": "Tamaño de Voxel",
+        "remesh_adaptivity": "Adaptivity",
+        "shader_material": "Material Shader",
+        "collision_material": "Material Colisión",
+        "collision_flags_section": "Collision Flags",
+        "use_default_flags": "Usar Flags por Defecto",
+        "customize_collision_flags": "Personalizar Flags",
+        "ytyp_section": "YTYP",
+        "archetype_section": "Archetype",
+        "no_ytyps": "Sin YTYPs",
+        "install_sollumz": "Instale y active Sollumz para elegir shaders",
+        "language_setting": "Idioma"
+    },
+    "properties": {
+        "original_mesh": {
+            "name": "Mesh Original",
+            "description": "Referencia al objeto mesh original"
+        },
+        "collision_mesh": {
+            "name": "Mesh de Colisión",
+            "description": "Referencia al objeto mesh de colisión (con sufijo 'col')"
+        },
+        "vertex_color": {
+            "name": "Color de Vértices",
+            "description": "Color usado para pintar vértices en la mesh original"
+        },
+        "enable_decimate": {
+            "name": "Activar Decimate",
+            "description": "Aplicar modificador decimate a la mesh de colisión para reducir el conteo de polígonos"
+        },
+        "decimate_type": {
+            "name": "Tipo de Decimate",
+            "description": "Tipo de decimate a aplicar",
+            "items": {
+                "collapse": {
+                    "name": "Collapse",
+                    "description": "Collapse de aristas"
+                },
+                "unsubdiv": {
+                    "name": "Un-Subdivide",
+                    "description": "Remover subdivisión"
+                },
+                "planar": {
+                    "name": "Planar",
+                    "description": "Remover caras planares"
+                }
+            }
+        },
+        "decimate_ratio": {
+            "name": "Proporción de Decimate",
+            "description": "Proporción de caras a mantener (para modo Collapse)"
+        },
+        "decimate_iterations": {
+            "name": "Iteraciones de Decimate",
+            "description": "Número de veces para un-subdivide la mesh de colisión (para modo Un-Subdivide)"
+        },
+        "decimate_use_dissolve": {
+            "name": "Usar Dissolve",
+            "description": "Dissolve de aristas al hacer un-subdivide (para modo Un-Subdivide)"
+        },
+        "decimate_planar_angle": {
+            "name": "Ángulo Planar",
+            "description": "Umbral de ángulo para decimate planar (para modo Planar)"
+        },
+        "enable_remesh": {
+            "name": "Activar Remesh",
+            "description": "Aplicar modificador remesh a la mesh de colisión"
+        },
+        "remesh_mode": {
+            "name": "Modo de Remesh",
+            "description": "Tipo de remesh a aplicar",
+            "items": {
+                "blocks": {
+                    "name": "Blocks",
+                    "description": "Remesh en blocks"
+                },
+                "smooth": {
+                    "name": "Smooth",
+                    "description": "Remesh smooth"
+                },
+                "sharp": {
+                    "name": "Sharp",
+                    "description": "Remesh sharp"
+                },
+                "voxels": {
+                    "name": "Voxels",
+                    "description": "Remesh basado en voxels"
+                }
+            }
+        },
+        "remesh_use_smooth_shade": {
+            "name": "Smooth Shading",
+            "description": "Usar smooth shading para remesh"
+        },
+        "remesh_threshold": {
+            "name": "Threshold",
+            "description": "Threshold para modos de remesh blocks, smooth y sharp"
+        },
+        "remesh_voxel_size": {
+            "name": "Tamaño de Voxel",
+            "description": "Tamaño de los voxels para remesh en modo voxel (menor = mayor detalle)"
+        },
+        "remesh_adaptivity": {
+            "name": "Adaptivity",
+            "description": "Adaptivity para remesh voxel (mayor = más reducción)"
+        },
+        "auto_texture_from_mesh_name": {
+            "name": "Textura Automática usando Nombre de Mesh",
+            "description": "Después de la conversión, definir las texturas de cada material a archivos externos nombrados desde la mesh original (ej: mesh0_diffuse.dds)"
+        },
+        "language": {
+            "name": "Idioma",
+            "description": "Idioma de la interfaz"
+        }
+    },
+    "operators": {
+        "convert": {
+            "label": "Convertir a GTA V",
+            "description": "Convertir objeto seleccionado a GTA V"
+        },
+        "export": {
+            "label": "Exportar YTYP y YDR",
+            "description": "Exportar el YTYP y YDR creados al directorio seleccionado",
+            "output_directory": "Directorio de salida",
+            "output_directory_description": "Seleccione el directorio de salida para exportación",
+            "format_native": "Nativo",
+            "format_native_description": "Exportar en formato binario nativo",
+            "format_xml": "CodeWalker XML",
+            "format_xml_description": "Exportar como CodeWalker XML",
+            "version_gen8": "Gen 8",
+            "version_gen8_description": "GTAV Legacy",
+            "version_gen9": "Gen 9",
+            "version_gen9_description": "GTAV Enhanced",
+            "format_heading": "Formato",
+            "version_heading": "Versión"
+        }
+    },
+    "messages": {
+        "error": {
+            "no_object_selected": "Ningún objeto activo seleccionado",
+            "not_mesh": "El objeto no es una mesh (tipo: {type})",
+            "not_selected": "El contorno del objeto no está seleccionado",
+            "sollumz_not_found": "El addon Sollumz no está instalado o no está en sys.path",
+            "duplicate_failed": "Falló al duplicar y preparar mesh",
+            "collision_failed": "Falló la conversión de colisión",
+            "drawable_failed": "Falló la conversión del drawable",
+            "material_failed": "Falló la conversión de material",
+            "ytyp_failed": "Falló la creación del YTYP",
+            "archetype_failed": "Falló la creación del archetype",
+            "switch_to_object_mode": "¡Por favor cambie a Modo Objeto!",
+            "select_object": "¡Por favor seleccione un objeto!",
+            "not_a_mesh": "¡El objeto seleccionado no es una mesh!",
+            "select_mesh": "¡Por favor seleccione una mesh para continuar!",
+            "conversion_failed": "Falló al convertir prop",
+            "no_directory": "¡Ningún directorio seleccionado!",
+            "no_ytyp": "¡Ningún YTYP encontrado! Por favor convierta un prop primero.",
+            "no_ytyp_selected": "¡Ningún YTYP seleccionado!",
+            "no_format": "¡Por favor seleccione al menos un formato de exportación!",
+            "no_version": "¡Por favor seleccione al menos una versión objetivo!",
+            "sollumz_addon_not_found": "Addon Sollumz no encontrado. Por favor asegúrese de que esté instalado y activado.",
+            "export_failed": "Falló la exportación: {error}"
+        },
+        "warning": {
+            "original_mesh_not_found": "Objeto mesh original no encontrado",
+            "ytyp_export_warning": "La exportación YTYP retornó estado no finalizado",
+            "drawable_export_warning": "La exportación Drawable retornó estado no finalizado"
+        },
+        "info": {
+            "conversion_success": "¡Prop convertido exitosamente!",
+            "export_success": "YTYP y Drawable exportados a {directory}"
+        }
+    }
+}

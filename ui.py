@@ -30,7 +30,25 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
             layout.prop(props, "vertex_color", text=i18n.t("ui.vertex_color"))
             # Optional auto texture naming from mesh name
             layout.prop(props, "auto_texture_from_mesh_name", text=i18n.t("ui.auto_texture_from_mesh_name"))
-            
+        
+        # Mirror Sollumz shader picker using its collection/list so users see the full shader list
+        if hasattr(wm, "sz_shader_materials") and hasattr(wm, "sz_shader_material_index"):
+            layout.separator()
+            layout.label(text=i18n.t("ui.shader_material"))
+            layout.template_list(
+                "SOLLUMZ_UL_SHADER_MATERIALS_LIST",
+                "propconverter_shader_list",
+                wm,
+                "sz_shader_materials",
+                wm,
+                "sz_shader_material_index",
+            )
+        else:
+            layout.separator()
+            layout.label(text=i18n.t("ui.install_sollumz"), icon="INFO")
+
+        # Collision mesh settings
+        if props:
             # Decimate settings
             layout.separator()
             layout.label(text=i18n.t("ui.collision_mesh_settings"))
@@ -62,20 +80,6 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
                     box.prop(props, "remesh_voxel_size", text=i18n.t("ui.remesh_voxel_size"))
                     box.prop(props, "remesh_adaptivity", text=i18n.t("ui.remesh_adaptivity"))
 
-        # Mirror Sollumz shader picker using its collection/list so users see the full shader list
-        if hasattr(wm, "sz_shader_materials") and hasattr(wm, "sz_shader_material_index"):
-            layout.label(text=i18n.t("ui.shader_material"))
-            layout.template_list(
-                "SOLLUMZ_UL_SHADER_MATERIALS_LIST",
-                "propconverter_shader_list",
-                wm,
-                "sz_shader_materials",
-                wm,
-                "sz_shader_material_index",
-            )
-        else:
-            layout.label(text=i18n.t("ui.install_sollumz"), icon="INFO")
-
         # Collision material selector for the collision mesh
         if hasattr(wm, "sz_collision_materials") and hasattr(wm, "sz_collision_material_index"):
             layout.separator()
@@ -88,6 +92,45 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
                 wm,
                 "sz_collision_material_index",
             )
+        
+        # Collision Flags section
+        if props:
+            layout.separator()
+            # Checkbox to use default collision flags
+            layout.prop(props, "use_default_flags", text=i18n.t("ui.use_default_flags"))
+            
+            # Only show customize option when default flags are NOT active
+            if not props.use_default_flags:
+                # Checkbox to toggle collision flags customization
+                layout.prop(props, "customize_collision_flags", text=i18n.t("ui.customize_collision_flags"))
+                
+                # Only show flags if customize_collision_flags is enabled
+                if props.customize_collision_flags:
+                    box = layout.box()
+                    # Make the text smaller for a more compact display
+                    box.scale_y = 0.8
+                    grid = box.grid_flow(columns=4, even_columns=True, even_rows=True)
+                    
+                    # Display all 16 collision flags in a 4-column grid
+                    grid.prop(props.collision_flags, "stairs")
+                    grid.prop(props.collision_flags, "not_climbable")
+                    grid.prop(props.collision_flags, "see_through")
+                    grid.prop(props.collision_flags, "shoot_through")
+                    
+                    grid.prop(props.collision_flags, "not_cover")
+                    grid.prop(props.collision_flags, "walkable_path")
+                    grid.prop(props.collision_flags, "no_cam_collision")
+                    grid.prop(props.collision_flags, "shoot_through_fx")
+                    
+                    grid.prop(props.collision_flags, "no_decal")
+                    grid.prop(props.collision_flags, "no_navmesh")
+                    grid.prop(props.collision_flags, "no_ragdoll")
+                    grid.prop(props.collision_flags, "vehicle_wheel")
+                    
+                    grid.prop(props.collision_flags, "no_ptfx")
+                    grid.prop(props.collision_flags, "too_steep_for_player")
+                    grid.prop(props.collision_flags, "no_network_spawn")
+                    grid.prop(props.collision_flags, "no_cam_collision_allow_clipping")
         
         # YTYP
         layout.separator()

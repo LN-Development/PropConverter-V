@@ -8,7 +8,7 @@ import bpy
 
 # Global translation cache
 _translations = {}
-_current_language = "pt_BR"  # Default to Portuguese
+_current_language = "en_US"  # Default to English
 _fallback_language = "en_US"
 
 def get_addon_directory():
@@ -45,7 +45,7 @@ def initialize():
     """Initialize the translation system"""
     global _translations, _current_language
     
-    # Load default language (Portuguese)
+    # Load default language (English)
     _translations[_current_language] = load_language(_current_language)
     
     # Load fallback language (English)

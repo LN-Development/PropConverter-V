@@ -61,6 +61,32 @@ def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
                     collision_mat = create_collision_material(collision_mat_index)
                     mesh.materials.append(collision_mat)
                     print("Created collision material for empty mesh")
+                
+                # Apply collision flags from PropConverter-V properties
+                props = getattr(context.scene, "prop_converter", None)
+                if props and hasattr(props, "collision_flags"):
+                    collision_flags = props.collision_flags
+                    # Apply flags to all collision materials on this mesh
+                    for mat in mesh.materials:
+                        if mat and hasattr(mat, "collision_flags"):
+                            mat.collision_flags.stairs = collision_flags.stairs
+                            mat.collision_flags.not_climbable = collision_flags.not_climbable
+                            mat.collision_flags.see_through = collision_flags.see_through
+                            mat.collision_flags.shoot_through = collision_flags.shoot_through
+                            mat.collision_flags.not_cover = collision_flags.not_cover
+                            mat.collision_flags.walkable_path = collision_flags.walkable_path
+                            mat.collision_flags.no_cam_collision = collision_flags.no_cam_collision
+                            mat.collision_flags.shoot_through_fx = collision_flags.shoot_through_fx
+                            mat.collision_flags.no_decal = collision_flags.no_decal
+                            mat.collision_flags.no_navmesh = collision_flags.no_navmesh
+                            mat.collision_flags.no_ragdoll = collision_flags.no_ragdoll
+                            mat.collision_flags.vehicle_wheel = collision_flags.vehicle_wheel
+                            mat.collision_flags.no_ptfx = collision_flags.no_ptfx
+                            mat.collision_flags.too_steep_for_player = collision_flags.too_steep_for_player
+                            mat.collision_flags.no_network_spawn = collision_flags.no_network_spawn
+                            mat.collision_flags.no_cam_collision_allow_clipping = collision_flags.no_cam_collision_allow_clipping
+                            print(f"Applied collision flags to material: {mat.name}")
+                
                 print(f"Successfully converted all materials to collision material on {poly_mesh.name}")
             except Exception as mat_err:
                 print(f"WARNING: Could not apply collision material to poly_mesh: {mat_err}")

@@ -1,5 +1,5 @@
 {
-    "language_name": "English",
+    "language_name": "English (USA)",
     "ui": {
         "panel_title": "PropConverter-V",
         "convert_button": "Convert to GTA V",
@@ -21,6 +21,9 @@
         "remesh_adaptivity": "Adaptivity",
         "shader_material": "Shader Material",
         "collision_material": "Collision Material",
+        "collision_flags_section": "Collision Flags",
+        "use_default_flags": "Use Default Flags",
+        "customize_collision_flags": "Customize Flags",
         "ytyp_section": "YTYP",
         "archetype_section": "Archetype",
         "no_ytyps": "No YTYPs",

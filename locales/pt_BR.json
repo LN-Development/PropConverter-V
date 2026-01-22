@@ -5,56 +5,59 @@
         "convert_button": "Converter para GTA V",
         "export_button": "Exportar YTYP e YDR",
         "vertex_color": "Cor dos Vértices",
-        "auto_texture_from_mesh_name": "Textura Automática do Nome da Malha",
-        "collision_mesh_settings": "Configurações da Malha de Colisão",
-        "enable_decimate": "Ativar Decimação",
+        "auto_texture_from_mesh_name": "Textura Automática usando Nome da Mesh",
+        "collision_mesh_settings": "Configurações da Mesh de Colisão",
+        "enable_decimate": "Ativar Decimate",
         "decimate_type": "Tipo",
         "decimate_ratio": "Proporção",
         "decimate_iterations": "Iterações",
-        "decimate_use_dissolve": "Usar Dissolução",
+        "decimate_use_dissolve": "Usar Dissolve",
         "decimate_angle": "Ângulo",
-        "enable_remesh": "Ativar Remalhagem",
+        "enable_remesh": "Ativar Remesh",
         "remesh_mode": "Modo",
         "remesh_smooth_shading": "Sombreamento Suave",
         "remesh_threshold": "Limiar",
         "remesh_voxel_size": "Tamanho do Voxel",
         "remesh_adaptivity": "Adaptabilidade",
-        "shader_material": "Material do Shader",
-        "collision_material": "Material de Colisão",
+        "shader_material": "Material Shader",
+        "collision_material": "Material Colisão",
+        "collision_flags_section": "Collision Flags",
+        "use_default_flags": "Usar Flags Padrão",
+        "customize_collision_flags": "Personalizar Flags",
         "ytyp_section": "YTYP",
-        "archetype_section": "Arquétipo",
+        "archetype_section": "Archetype",
         "no_ytyps": "Nenhum YTYP",
         "install_sollumz": "Instale e ative o Sollumz para escolher shaders",
         "language_setting": "Idioma"
     },
     "properties": {
         "original_mesh": {
-            "name": "Malha Original",
-            "description": "Referência ao objeto de malha original"
+            "name": "Mesh Original",
+            "description": "Referência ao objeto mesh original"
         },
         "collision_mesh": {
-            "name": "Malha de Colisão",
-            "description": "Referência ao objeto de malha de colisão (com sufixo 'col')"
+            "name": "Mesh de Collision",
+            "description": "Referência ao objeto mesh de collision (com sufixo 'col')"
         },
         "vertex_color": {
             "name": "Cor dos Vértices",
-            "description": "Cor usada para pintar vértices na malha original"
+            "description": "Cor usada para pintar vértices na mesh original"
         },
         "enable_decimate": {
-            "name": "Ativar Decimação",
-            "description": "Aplicar modificador de decimação à malha de colisão para reduzir a contagem de polígonos"
+            "name": "Ativar Decimate",
+            "description": "Aplicar modificador decimate à mesh de collision para reduzir a contagem de polígonos"
         },
         "decimate_type": {
-            "name": "Tipo de Decimação",
-            "description": "Tipo de decimação a aplicar",
+            "name": "Tipo de Decimate",
+            "description": "Tipo de decimate a aplicar",
             "items": {
                 "collapse": {
-                    "name": "Colapsar",
-                    "description": "Colapsar arestas"
+                    "name": "Collapse",
+                    "description": "Collapse de arestas"
                 },
                 "unsubdiv": {
-                    "name": "Dessubdividir",
-                    "description": "Remover superfícies de subdivisão"
+                    "name": "Un-Subdivide",
+                    "description": "Remover subdivisão"
                 },
                 "planar": {
                     "name": "Planar",
@@ -63,66 +66,66 @@
             }
         },
         "decimate_ratio": {
-            "name": "Proporção de Decimação",
-            "description": "Proporção de faces a manter (para modo Colapsar)"
+            "name": "Proporção de Decimate",
+            "description": "Proporção de faces a manter (para modo Collapse)"
         },
         "decimate_iterations": {
-            "name": "Iterações de Decimação",
-            "description": "Número de vezes para dessubdividir a malha de colisão (para modo Dessubdividir)"
+            "name": "Iterações de Decimate",
+            "description": "Número de vezes para un-subdivide a mesh de collision (para modo Un-Subdivide)"
         },
         "decimate_use_dissolve": {
-            "name": "Usar Dissolução",
-            "description": "Dissolver arestas ao dessubdividir (para modo Dessubdividir)"
+            "name": "Usar Dissolve",
+            "description": "Dissolve de arestas ao fazer un-subdivide (para modo Un-Subdivide)"
         },
         "decimate_planar_angle": {
             "name": "Ângulo Planar",
-            "description": "Limiar de ângulo para decimação planar (para modo Planar)"
+            "description": "Limiar de ângulo para decimate planar (para modo Planar)"
         },
         "enable_remesh": {
-            "name": "Ativar Remalhagem",
-            "description": "Aplicar modificador de remalhagem à malha de colisão"
+            "name": "Ativar Remesh",
+            "description": "Aplicar modificador remesh à mesh de collision"
         },
         "remesh_mode": {
-            "name": "Modo de Remalhagem",
-            "description": "Tipo de remalhagem a aplicar",
+            "name": "Modo de Remesh",
+            "description": "Tipo de remesh a aplicar",
             "items": {
                 "blocks": {
-                    "name": "Blocos",
-                    "description": "Remalhagem em blocos"
+                    "name": "Blocks",
+                    "description": "Remesh em blocks"
                 },
                 "smooth": {
-                    "name": "Suave",
-                    "description": "Remalhagem suave"
+                    "name": "Smooth",
+                    "description": "Remesh smooth"
                 },
                 "sharp": {
-                    "name": "Afiada",
-                    "description": "Remalhagem afiada"
+                    "name": "Sharp",
+                    "description": "Remesh sharp"
                 },
                 "voxels": {
                     "name": "Voxels",
-                    "description": "Remalhagem baseada em voxels"
+                    "description": "Remesh baseado em voxels"
                 }
             }
         },
         "remesh_use_smooth_shade": {
-            "name": "Sombreamento Suave",
-            "description": "Usar sombreamento suave para remalhagem"
+            "name": "Smooth Shading",
+            "description": "Usar smooth shading para remesh"
         },
         "remesh_threshold": {
-            "name": "Limiar",
-            "description": "Limiar para modos de remalhagem blocos, suave e afiada"
+            "name": "Threshold",
+            "description": "Threshold para modos de remesh blocks, smooth e sharp"
         },
         "remesh_voxel_size": {
             "name": "Tamanho do Voxel",
-            "description": "Tamanho dos voxels para remalhagem em modo voxel (menor = maior detalhe)"
+            "description": "Tamanho dos voxels para remesh em modo voxel (menor = maior detalhe)"
         },
         "remesh_adaptivity": {
-            "name": "Adaptabilidade",
-            "description": "Adaptabilidade para remalhagem voxel (maior = mais redução)"
+            "name": "Adaptivity",
+            "description": "Adaptivity para remesh voxel (maior = mais redução)"
         },
         "auto_texture_from_mesh_name": {
-            "name": "Textura Automática do Nome da Malha",
-            "description": "Após a conversão, definir as texturas de cada material para arquivos externos nomeados a partir da malha original (ex: mesh0_diffuse.dds)"
+            "name": "Textura Automática usando Nome da Mesh",
+            "description": "Após a conversão, definir as texturas de cada material para arquivos externos nomeados a partir da mesh original (ex: mesh0_diffuse.dds)"
         },
         "language": {
             "name": "Idioma",

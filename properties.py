@@ -6,6 +6,73 @@ from . import i18n
 def update_language(self, context):
     """Update language when user changes preference"""
     i18n.set_language(self.language)
+    # Save user preferences to persist the language selection
+    try:
+        bpy.ops.wm.save_userpref()
+    except:
+        pass  # Ignore if saving fails
+
+
+def update_default_flags(self, context):
+    """Apply default collision flags when use_default_flags is enabled"""
+    if self.use_default_flags:
+        # Set the three default flags
+        self.collision_flags.not_climbable = True
+        self.collision_flags.not_cover = True
+        self.collision_flags.too_steep_for_player = True
+        
+        # Clear all other flags
+        self.collision_flags.stairs = False
+        self.collision_flags.see_through = False
+        self.collision_flags.shoot_through = False
+        self.collision_flags.walkable_path = False
+        self.collision_flags.no_cam_collision = False
+        self.collision_flags.shoot_through_fx = False
+        self.collision_flags.no_decal = False
+        self.collision_flags.no_navmesh = False
+        self.collision_flags.no_ragdoll = False
+        self.collision_flags.vehicle_wheel = False
+        self.collision_flags.no_ptfx = False
+        self.collision_flags.no_network_spawn = False
+        self.collision_flags.no_cam_collision_allow_clipping = False
+    else:
+        # When disabled, clear ALL flags (including the default ones)
+        self.collision_flags.stairs = False
+        self.collision_flags.not_climbable = False
+        self.collision_flags.see_through = False
+        self.collision_flags.shoot_through = False
+        self.collision_flags.not_cover = False
+        self.collision_flags.walkable_path = False
+        self.collision_flags.no_cam_collision = False
+        self.collision_flags.shoot_through_fx = False
+        self.collision_flags.no_decal = False
+        self.collision_flags.no_navmesh = False
+        self.collision_flags.no_ragdoll = False
+        self.collision_flags.vehicle_wheel = False
+        self.collision_flags.no_ptfx = False
+        self.collision_flags.too_steep_for_player = False
+        self.collision_flags.no_network_spawn = False
+        self.collision_flags.no_cam_collision_allow_clipping = False
+
+
+class CollisionFlagsProperties(bpy.types.PropertyGroup):
+    """Collision material flags that will be applied during conversion"""
+    stairs: bpy.props.BoolProperty(name="STAIRS", default=False)
+    not_climbable: bpy.props.BoolProperty(name="NOT CLIMBABLE", default=False)
+    see_through: bpy.props.BoolProperty(name="SEE THROUGH", default=False)
+    shoot_through: bpy.props.BoolProperty(name="SHOOT THROUGH", default=False)
+    not_cover: bpy.props.BoolProperty(name="NOT COVER", default=False)
+    walkable_path: bpy.props.BoolProperty(name="WALKABLE PATH", default=False)
+    no_cam_collision: bpy.props.BoolProperty(name="NO CAM COLLISION", default=False)
+    shoot_through_fx: bpy.props.BoolProperty(name="SHOOT THROUGH FX", default=False)
+    no_decal: bpy.props.BoolProperty(name="NO DECAL", default=False)
+    no_navmesh: bpy.props.BoolProperty(name="NO NAVMESH", default=False)
+    no_ragdoll: bpy.props.BoolProperty(name="NO RAGDOLL", default=False)
+    vehicle_wheel: bpy.props.BoolProperty(name="VEHICLE WHEEL", default=False)
+    no_ptfx: bpy.props.BoolProperty(name="NO PTFX", default=False)
+    too_steep_for_player: bpy.props.BoolProperty(name="TOO STEEP FOR PLAYER", default=False)
+    no_network_spawn: bpy.props.BoolProperty(name="NO NETWORK SPAWN", default=False)
+    no_cam_collision_allow_clipping: bpy.props.BoolProperty(name="NO CAM COLLISION ALLOW CLIPPING", default=False)
 
 
 class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
@@ -14,11 +81,12 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         name="Language",
         description="Interface language",
         items=[
+            ('en_US', "English (USA)", "English (United-Statesian)"),
+            ('es_ES', "Español", "Spanish"),
             ('pt_BR', "Português (Brasil)", "Portuguese (Brazilian)"),
-            ('en_US', "English", "English"),
         ],
         update=update_language,
-        default='pt_BR',
+        default='en_US',
     )
 
     original_mesh: PointerProperty(
@@ -144,8 +212,28 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         default=False,
     )
 
+    use_default_flags: bpy.props.BoolProperty(
+        name="Use Default Flags",
+        description="Apply default collision flags (NOT CLIMBABLE, NOT COVER, TOO STEEP FOR PLAYER)",
+        default=False,
+        update=update_default_flags,
+    )
+
+    customize_collision_flags: bpy.props.BoolProperty(
+        name="Customize Flags",
+        description="Show collision flags customization options",
+        default=False,
+    )
+
+    collision_flags: PointerProperty(
+        name="Collision Flags",
+        description="Collision material flags to apply during conversion",
+        type=CollisionFlagsProperties
+    )
+
 
 classes = [
+    CollisionFlagsProperties,
     PROPCONVERTER_Properties,
 ]
 
