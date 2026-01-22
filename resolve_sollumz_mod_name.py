@@ -40,3 +40,30 @@ def resolve_sollumz_mod_name():
                 break
 
     return mod_name
+
+
+def get_sollumz_preferences(context):
+    """
+    Get the Sollumz addon preferences from Blender.
+    
+    This function searches through all enabled addons to find Sollumz,
+    ensuring it doesn't match our own addon (autoPropSollumz).
+    
+    Args:
+        context: Blender context
+        
+    Returns:
+        Sollumz addon preferences object if found, None otherwise
+    """
+    # First verify Sollumz operators are available
+    if not hasattr(bpy.ops, 'sollumz'):
+        return None
+    
+    # Search through enabled addons
+    for addon in context.preferences.addons:
+        addon_module = addon.module.lower()
+        # Match 'sollumz' but exclude our own addon (autoprop*)
+        if 'sollumz' in addon_module and 'autoprop' not in addon_module:
+            return addon.preferences
+    
+    return None

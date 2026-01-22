@@ -1,6 +1,7 @@
 import bpy
 from .. import i18n
 from .. import logger
+from ..resolve_sollumz_mod_name import get_sollumz_preferences
 
 
 class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
@@ -99,12 +100,8 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
 
         # Get Sollumz preferences and temporarily set export options
         try:
-            # Find Sollumz addon preferences
-            sollumz_prefs = None
-            for addon in context.preferences.addons:
-                if 'sollumz' in addon.module.lower():
-                    sollumz_prefs = addon.preferences
-                    break
+            # Find Sollumz addon preferences using our helper function
+            sollumz_prefs = get_sollumz_preferences(context)
             
             if sollumz_prefs is None:
                 logger.log_error("messages.error.sollumz_addon_not_found", operator=self)

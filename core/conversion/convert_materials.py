@@ -24,17 +24,20 @@ def convert_materials(context, model_objs, mod_name: str) -> bool:
 
         bpy.ops.sollumz.convertallmaterialstoselected()
         
-        # Set texture parameters after conversion
+        # Set texture parameters after conversion (only if auto texture is enabled)
         from .set_textures import set_textures_from_original_name
         scene_props = getattr(context.scene, "prop_converter", None)
-        original_mesh = scene_props.original_mesh if scene_props else None
-        if original_mesh:
-            original_name = original_mesh.name
-            ok_textures = set_textures_from_original_name(context, model_objs, original_name)
-            if not ok_textures:
-                print("[WARNING] Failed to set texture parameters; continuing")
-        else:
-            print("[WARNING] Original mesh not found, skipping texture parameter setup")
+        
+        # Check if auto texture feature is enabled
+        if scene_props and getattr(scene_props, "auto_texture_from_mesh_name", False):
+            original_mesh = scene_props.original_mesh if scene_props else None
+            if original_mesh:
+                original_name = original_mesh.name
+                ok_textures = set_textures_from_original_name(context, model_objs, original_name)
+                if not ok_textures:
+                    print("[WARNING] Failed to set texture parameters; continuing")
+            else:
+                print("[WARNING] Original mesh not found, skipping texture parameter setup")
         
         return True
     except Exception as e:
