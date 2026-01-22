@@ -1,5 +1,6 @@
 import bpy
 from .. import i18n
+from .. import logger
 
 
 class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
@@ -63,17 +64,17 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
 
     def execute(self, context):
         if not self.directory:
-            self.report({"ERROR"}, i18n.t("messages.error.no_directory"))
+            logger.log_error("messages.error.no_directory", operator=self)
             return {"CANCELLED"}
 
         # Check if there's a YTYP to export
         if len(context.scene.ytyps) == 0:
-            self.report({"ERROR"}, i18n.t("messages.error.no_ytyp"))
+            logger.log_error("messages.error.no_ytyp", operator=self)
             return {"CANCELLED"}
 
         # Check if there's a selected YTYP
         if context.scene.ytyp_index < 0 or context.scene.ytyp_index >= len(context.scene.ytyps):
-            self.report({"ERROR"}, i18n.t("messages.error.no_ytyp_selected"))
+            logger.log_error("messages.error.no_ytyp_selected", operator=self)
             return {"CANCELLED"}
 
         # Collect format/version selections
@@ -90,10 +91,10 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
             versions_selected.add('GEN9')
 
         if not formats_selected:
-            self.report({"ERROR"}, i18n.t("messages.error.no_format"))
+            logger.log_error("messages.error.no_format", operator=self)
             return {"CANCELLED"}
         if not versions_selected:
-            self.report({"ERROR"}, i18n.t("messages.error.no_version"))
+            logger.log_error("messages.error.no_version", operator=self)
             return {"CANCELLED"}
 
         # Get Sollumz preferences and temporarily set export options
@@ -106,7 +107,7 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                     break
             
             if sollumz_prefs is None:
-                self.report({"ERROR"}, i18n.t("messages.error.sollumz_addon_not_found"))
+                logger.log_error("messages.error.sollumz_addon_not_found", operator=self)
                 return {"CANCELLED"}
             
             # Store original settings to restore later
@@ -122,12 +123,12 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                 # Export YTYP first
                 result = bpy.ops.sollumz.export_ytyp_io(directory=self.directory)
                 if result != {"FINISHED"}:
-                    self.report({"WARNING"}, i18n.t("messages.warning.ytyp_export_warning"))
+                    logger.log_warning("messages.warning.ytyp_export_warning", operator=self)
                 
                 # Export Drawable (YDR)
                 result = bpy.ops.sollumz.export_assets(directory=self.directory, direct_export=True)
                 if result != {"FINISHED"}:
-                    self.report({"WARNING"}, i18n.t("messages.warning.drawable_export_warning"))
+                    logger.log_warning("messages.warning.drawable_export_warning", operator=self)
                     
             finally:
                 # Restore original settings
@@ -135,9 +136,8 @@ class PROPCONVERTER_OT_export_prop(bpy.types.Operator):
                 export_settings.target_versions = original_versions
                 
         except Exception as e:
-            print(f"[ERROR] Export failed: {e}")
-            self.report({"ERROR"}, i18n.t("messages.error.export_failed", error=str(e)))
+            logger.log_error("messages.error.export_failed", operator=self, error=str(e))
             return {"CANCELLED"}
 
-        self.report({"INFO"}, i18n.t("messages.info.export_success", directory=self.directory))
+        logger.log_info("messages.info.export_success", operator=self, directory=self.directory)
         return {"FINISHED"}

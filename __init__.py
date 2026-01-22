@@ -13,6 +13,7 @@
 
 import bpy
 from . import i18n
+from . import logger
 from . import properties
 from . import operators
 from . import ui
@@ -21,6 +22,9 @@ from . import ui
 def register():   
     # Initialize i18n system first
     i18n.initialize()
+    
+    # Register logger for popup notifications
+    logger.register()
     
     properties.register()
     operators.register()
@@ -32,4 +36,5 @@ def unregister():
     ui.unregister()
     operators.unregister()
     properties.unregister()
+    logger.unregister()
 
