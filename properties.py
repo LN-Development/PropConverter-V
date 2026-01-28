@@ -212,9 +212,62 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
     )
 
 
+class PROPCONVERTER_ExportPreferences(bpy.types.AddonPreferences):
+    """Global addon preferences for export settings.
+    
+    These settings persist across all Blender sessions and .blend files,
+    matching Sollumz's behavior exactly.
+    """
+    # Get the root addon package name (handles both normal addons and Blender 5.0 extensions)
+    bl_idname = __package__.split('.operators')[0] if '.operators' in __package__ else __package__
+    if __package__.startswith('bl_ext.'):
+        # For Blender 5.0 extensions: bl_ext.user_default.propconverterv
+        parts = __package__.split('.')
+        bl_idname = '.'.join(parts[:3]) if len(parts) >= 3 else __package__
+    
+    # Mesh Domain Selection (exclusive - only one can be selected)
+    export_mesh_domain: bpy.props.EnumProperty(
+        name="Mesh Domain",
+        description="Select which mesh domain to export",
+        items=[
+            ('FACE_CORNER', "Face Corner", "Export Face Corner domain attributes (UVs, vertex colors)"),
+            ('VERTEX', "Vertex", "Export Vertex domain attributes"),
+        ],
+        default='FACE_CORNER',
+    )
+    
+    # Export Format Options
+    export_format_native: bpy.props.BoolProperty(
+        name="Native",
+        description="Export in native binary format",
+        default=True,
+    )
+    
+    export_format_xml: bpy.props.BoolProperty(
+        name="CodeWalker XML",
+        description="Export as CodeWalker XML",
+        default=True,
+    )
+    
+    # Target Version Options
+    target_version_gen8: bpy.props.BoolProperty(
+        name="Gen 8",
+        description="GTAV Legacy",
+        default=True,
+    )
+    
+    target_version_gen9: bpy.props.BoolProperty(
+        name="Gen 9",
+        description="GTAV Enhanced",
+        default=True,
+    )
+
+
+
 classes = [
     CollisionFlagsProperties,
     PROPCONVERTER_Properties,
+    PROPCONVERTER_ExportPreferences,
 ]
 
 

@@ -28,7 +28,17 @@
         "archetype_section": "Archetype",
         "no_ytyps": "Nenhum YTYP",
         "install_sollumz": "Instale e ative o Sollumz para escolher shaders",
-        "language_setting": "Idioma"
+        "language_setting": "Idioma",
+        "export_settings_section": "Configurações de Exportação",
+        "mesh_domains_heading": "Domínios da Mesh",
+        "export_face_corner": "Face Corner",
+        "export_vertex": "Vertex",
+        "export_formats_heading": "Formatos de Exportação",
+        "export_format_native": "Nativo",
+        "export_format_xml": "CodeWalker XML",
+        "target_versions_heading": "Versões de Destino",
+        "target_version_gen8": "Gen 8 (Legacy)",
+        "target_version_gen9": "Gen 9 (Enhanced)"
     },
     "properties": {
         "original_mesh": {
@@ -151,7 +161,10 @@
             "version_gen9": "Gen 9",
             "version_gen9_description": "GTAV Enhanced",
             "format_heading": "Formato",
-            "version_heading": "Versão"
+            "version_heading": "Versão",
+            "mesh_domains_heading": "Domínios da Mesh",
+            "mesh_domain_face_corner": "Face Corner",
+            "mesh_domain_vertex": "Vertex"
         }
     },
     "messages": {

@@ -28,7 +28,17 @@
         "archetype_section": "Archetype",
         "no_ytyps": "No YTYPs",
         "install_sollumz": "Install & enable Sollumz to pick shaders",
-        "language_setting": "Language"
+        "language_setting": "Language",
+        "export_settings_section": "Export Settings",
+        "mesh_domains_heading": "Mesh Domains",
+        "export_face_corner": "Face Corner",
+        "export_vertex": "Vertex",
+        "export_formats_heading": "Export Formats",
+        "export_format_native": "Native",
+        "export_format_xml": "CodeWalker XML",
+        "target_versions_heading": "Target Versions",
+        "target_version_gen8": "Gen 8 (Legacy)",
+        "target_version_gen9": "Gen 9 (Enhanced)"
     },
     "properties": {
         "original_mesh": {
@@ -151,7 +161,10 @@
             "version_gen9": "Gen 9",
             "version_gen9_description": "GTAV Enhanced",
             "format_heading": "Format",
-            "version_heading": "Version"
+            "version_heading": "Version",
+            "mesh_domains_heading": "Mesh Domains",
+            "mesh_domain_face_corner": "Face Corner",
+            "mesh_domain_vertex": "Vertex"
         }
     },
     "messages": {
