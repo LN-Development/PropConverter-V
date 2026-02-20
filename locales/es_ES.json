@@ -4,48 +4,49 @@
         "panel_title": "PropConverter-V",
         "convert_button": "Convertir a GTA V",
         "dynamic_prop": "Prop Dinámico",
-        "dynamic_prop_desc": "Activado por física (empujable, reaccionable)",
         "door_prop": "Prop de Puerta",
-        "door_prop_desc": "Colisión incrustada (sin .ybn)",
+        "door_hinge_none": "Centro",
+        "door_hinge_left": "Bisagra Izquierda",
+        "door_hinge_right": "Bisagra Derecha",
         "export_button": "Exportar YTYP y YDR",
         "vertex_color": "Color de Vértices",
         "auto_texture_from_mesh_name": "Textura Automática usando Nombre de Mesh",
         "collision_mesh_settings": "Configuración de Mesh de Colisión",
-        "enable_decimate": "Activar Decimate",
+        "enable_decimate": "Habilitar Decimate",
         "decimate_type": "Tipo",
         "decimate_ratio": "Proporción",
         "decimate_iterations": "Iteraciones",
         "decimate_use_dissolve": "Usar Dissolve",
         "decimate_angle": "Ángulo",
-        "enable_remesh": "Activar Remesh",
+        "enable_remesh": "Habilitar Remesh",
         "remesh_mode": "Modo",
-        "remesh_smooth_shading": "Smooth Shading",
-        "remesh_threshold": "Threshold",
-        "remesh_voxel_size": "Tamaño de Voxel",
-        "remesh_adaptivity": "Adaptivity",
-        "shader_material": "Material Shader",
-        "collision_material": "Material Colisión",
-        "collision_flags_section": "Collision Flags",
+        "remesh_smooth_shading": "Sombreado Suave",
+        "remesh_threshold": "Umbral",
+        "remesh_voxel_size": "Tamaño de Vóxel",
+        "remesh_adaptivity": "Adaptatividad",
+        "shader_material": "Material de Shader",
+        "collision_material": "Material de Colisión",
+        "collision_flags_section": "Flags de Colisión",
         "use_default_flags": "Usar Flags por Defecto",
         "customize_collision_flags": "Personalizar Flags",
         "ytyp_section": "YTYP",
-        "archetype_section": "Archetype",
+        "archetype_section": "Arquetipo",
         "no_ytyps": "Sin YTYPs",
-        "install_sollumz": "Instale y active Sollumz para elegir shaders",
+        "install_sollumz": "Instala y habilita Sollumz para elegir shaders",
         "language_setting": "Idioma",
         "export_settings_section": "Configuración de Exportación",
-        "mesh_domains_heading": "Dominios de la Mesh",
+        "mesh_domains_heading": "Dominios de Mesh",
         "export_face_corner": "Face Corner",
         "export_vertex": "Vertex",
         "export_formats_heading": "Formatos de Exportación",
         "export_format_native": "Nativo",
         "export_format_xml": "CodeWalker XML",
-        "target_versions_heading": "Versiones Objetivo",
+        "target_versions_heading": "Versiones de Destino",
         "target_version_gen8": "Gen 8 (Legacy)",
         "target_version_gen9": "Gen 9 (Enhanced)",
-        "ao_baking_section": "Oclusión Ambiente",
+        "ao_baking_section": "Oclusión Ambiental",
         "bake_ao_button": "Hornear AO a Atributo de Color",
-        "gather_info_button": "Reunir Información del Modelo"
+        "gather_info_button": "Obtener Información del Modelo"
     },
     "properties": {
         "original_mesh": {
@@ -54,53 +55,53 @@
         },
         "collision_mesh": {
             "name": "Mesh de Colisión",
-            "description": "Referencia al objeto mesh de colisión (con sufijo 'col')"
+            "description": "Referencia ao objeto mesh de colisão (com sufixo 'col')"
         },
         "vertex_color": {
             "name": "Color de Vértices",
-            "description": "Color usado para pintar vértices en la mesh original"
+            "description": "Color usado para pintar vértices no mesh original"
         },
         "enable_decimate": {
-            "name": "Activar Decimate",
-            "description": "Aplicar modificador decimate a la mesh de colisión para reducir el conteo de polígonos"
+            "name": "Habilitar Decimate",
+            "description": "Aplica o modificador decimate ao mesh de colisão para reduzir a contagem de polígonos"
         },
         "decimate_type": {
             "name": "Tipo de Decimate",
-            "description": "Tipo de decimate a aplicar",
+            "description": "Tipo de decimação a aplicar",
             "items": {
                 "collapse": {
                     "name": "Collapse",
-                    "description": "Collapse de aristas"
+                    "description": "Colapsar arestas"
                 },
                 "unsubdiv": {
-                    "name": "Un-Subdivide",
-                    "description": "Remover subdivisión"
+                    "name": "Un-subdivide",
+                    "description": "Remover superfícies de subdivisão"
                 },
                 "planar": {
                     "name": "Planar",
-                    "description": "Remover caras planares"
+                    "description": "Remover faces planares"
                 }
             }
         },
         "decimate_ratio": {
-            "name": "Proporción de Decimate",
-            "description": "Proporción de caras a mantener (para modo Collapse)"
+            "name": "Proporção de Decimate",
+            "description": "Proporção de faces a manter (para o modo Collapse)"
         },
         "decimate_iterations": {
-            "name": "Iteraciones de Decimate",
-            "description": "Número de veces para un-subdivide la mesh de colisión (para modo Un-Subdivide)"
+            "name": "Iterações de Decimate",
+            "description": "Número de vezes para des-subdividir o mesh de colisão (para o modo Un-subdivide)"
         },
         "decimate_use_dissolve": {
             "name": "Usar Dissolve",
-            "description": "Dissolve de aristas al hacer un-subdivide (para modo Un-Subdivide)"
+            "description": "Dissolver arestas ao des-subdividir (para o modo Un-subdivide)"
         },
         "decimate_planar_angle": {
             "name": "Ángulo Planar",
-            "description": "Umbral de ángulo para decimate planar (para modo Planar)"
+            "description": "Limiar de ângulo para decimação planar (para o modo Planar)"
         },
         "enable_remesh": {
-            "name": "Activar Remesh",
-            "description": "Aplicar modificador remesh a la mesh de colisión"
+            "name": "Habilitar Remesh",
+            "description": "Aplica o modificador remesh ao mesh de colisão"
         },
         "remesh_mode": {
             "name": "Modo de Remesh",
@@ -108,45 +109,45 @@
             "items": {
                 "blocks": {
                     "name": "Blocks",
-                    "description": "Remesh en blocks"
+                    "description": "Remesh em blocos"
                 },
                 "smooth": {
                     "name": "Smooth",
-                    "description": "Remesh smooth"
+                    "description": "Remesh suave"
                 },
                 "sharp": {
                     "name": "Sharp",
-                    "description": "Remesh sharp"
+                    "description": "Remesh nítido"
                 },
                 "voxels": {
                     "name": "Voxels",
-                    "description": "Remesh basado en voxels"
+                    "description": "Remesh baseado em voxels"
                 }
             }
         },
         "remesh_use_smooth_shade": {
-            "name": "Smooth Shading",
-            "description": "Usar smooth shading para remesh"
+            "name": "Sombreado Suave",
+            "description": "Usar sombreado suave para o remesh"
         },
         "remesh_threshold": {
-            "name": "Threshold",
-            "description": "Threshold para modos de remesh blocks, smooth y sharp"
+            "name": "Umbral",
+            "description": "Limiar para os modos de remesh blocks, smooth e sharp"
         },
         "remesh_voxel_size": {
-            "name": "Tamaño de Voxel",
-            "description": "Tamaño de los voxels para remesh en modo voxel (menor = mayor detalle)"
+            "name": "Tamaño de Vóxel",
+            "description": "Tamanho dos voxels para o remesh no modo voxel (menor = maior detalhamento)"
         },
         "remesh_adaptivity": {
-            "name": "Adaptivity",
-            "description": "Adaptivity para remesh voxel (mayor = más reducción)"
+            "name": "Adaptatividad",
+            "description": "Adaptatividade para o voxel remesh (maior = mais redução)"
         },
         "auto_texture_from_mesh_name": {
             "name": "Textura Automática usando Nombre de Mesh",
-            "description": "Después de la conversión, definir las texturas de cada material a archivos externos nombrados desde la mesh original (ej: mesh0_diffuse.dds)"
+            "description": "Após a conversão, define as texturas de cada material para arquivos externos nomeados a partir do mesh original (ex: mesh0_diffuse.dds)"
         },
         "language": {
             "name": "Idioma",
-            "description": "Idioma de la interfaz"
+            "description": "Idioma da interface"
         }
     },
     "operators": {
@@ -156,9 +157,9 @@
         },
         "export": {
             "label": "Exportar YTYP y YDR",
-            "description": "Exportar el YTYP y YDR creados al directorio seleccionado",
+            "description": "Exportar o YTYP e YDR criados para o diretório selecionado",
             "output_directory": "Directorio de salida",
-            "output_directory_description": "Seleccione el directorio de salida para exportación",
+            "output_directory_description": "Seleccionar directorio de salida para exportación",
             "format_native": "Nativo",
             "format_native_description": "Exportar en formato binario nativo",
             "format_xml": "CodeWalker XML",
@@ -169,43 +170,43 @@
             "version_gen9_description": "GTAV Enhanced",
             "format_heading": "Formato",
             "version_heading": "Versión",
-            "mesh_domains_heading": "Dominios de la Mesh",
+            "mesh_domains_heading": "Dominios de Mesh",
             "mesh_domain_face_corner": "Face Corner",
             "mesh_domain_vertex": "Vertex"
         }
     },
     "messages": {
         "error": {
-            "no_object_selected": "Ningún objeto activo seleccionado",
-            "not_mesh": "El objeto no es una mesh (tipo: {type})",
+            "no_object_selected": "Sin objeto activo seleccionado",
+            "not_mesh": "El objeto no es un mesh (tipo: {type})",
             "not_selected": "El contorno del objeto no está seleccionado",
             "sollumz_not_found": "El addon Sollumz no está instalado o no está en sys.path",
-            "duplicate_failed": "Falló al duplicar y preparar mesh",
-            "collision_failed": "Falló la conversión de colisión",
-            "drawable_failed": "Falló la conversión del drawable",
-            "material_failed": "Falló la conversión de material",
-            "ytyp_failed": "Falló la creación del YTYP",
-            "archetype_failed": "Falló la creación del archetype",
-            "switch_to_object_mode": "¡Por favor cambie a Modo Objeto!",
-            "select_object": "¡Por favor seleccione un objeto!",
-            "not_a_mesh": "¡El objeto seleccionado no es una mesh!",
-            "select_mesh": "¡Por favor seleccione una mesh para continuar!",
-            "conversion_failed": "Falló al convertir prop",
-            "no_directory": "¡Ningún directorio seleccionado!",
-            "no_ytyp": "¡Ningún YTYP encontrado! Por favor convierta un prop primero.",
-            "no_ytyp_selected": "¡Ningún YTYP seleccionado!",
-            "no_format": "¡Por favor seleccione al menos un formato de exportación!",
-            "no_version": "¡Por favor seleccione al menos una versión objetivo!",
-            "sollumz_addon_not_found": "Addon Sollumz no encontrado. Por favor asegúrese de que esté instalado y activado.",
-            "export_failed": "Falló la exportación: {error}"
+            "duplicate_failed": "Error al duplicar y preparar el mesh",
+            "collision_failed": "Error en la conversión de colisión",
+            "drawable_failed": "Error en la conversión de drawable",
+            "material_failed": "Error en la conversión de material",
+            "ytyp_failed": "Error en la creación de YTYP",
+            "archetype_failed": "Error en la creación de arquetipo",
+            "switch_to_object_mode": "¡Por favor, cambia al Modo Objeto!",
+            "select_object": "¡Por favor, selecciona um objeto!",
+            "not_a_mesh": "¡El objeto seleccionado no es um mesh!",
+            "select_mesh": "¡Por favor, selecciona um mesh para continuar!",
+            "conversion_failed": "Error al convertir el prop",
+            "no_directory": "¡Sin directorio seleccionado!",
+            "no_ytyp": "¡YTYP no encontrado! Por favor, convierte um prop primero.",
+            "no_ytyp_selected": "¡Sin YTYP seleccionado!",
+            "no_format": "¡Por favor, selecciona al menos um formato de exportación!",
+            "no_version": "¡Por favor, selecciona al menos una versión de destino!",
+            "sollumz_addon_not_found": "Addon Sollumz no encontrado. Por favor, asegúrate de que esté instalado y habilitado.",
+            "export_failed": "Exportación fallida: {error}"
         },
         "warning": {
-            "original_mesh_not_found": "Objeto mesh original no encontrado",
-            "ytyp_export_warning": "La exportación YTYP retornó estado no finalizado",
-            "drawable_export_warning": "La exportación Drawable retornó estado no finalizado"
+            "original_mesh_not_found": "Objeto de mesh original no encontrado",
+            "ytyp_export_warning": "La exportación de YTYP devolvió um estado no finalizado",
+            "drawable_export_warning": "La exportación de drawable devolvió um estado no finalizado"
         },
         "info": {
-            "conversion_success": "¡Prop convertido exitosamente!",
+            "conversion_success": "¡Prop convertido con éxito!",
             "export_success": "YTYP y Drawable exportados a {directory}"
         }
     }

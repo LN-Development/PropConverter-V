@@ -229,6 +229,17 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         default=False,
     )
 
+    door_hinge_side: bpy.props.EnumProperty(
+        name="Hinge Side",
+        description="Align the door hinge to the world origin",
+        items=[
+            ('NONE', "Center", "Keep door in its current position"),
+            ('LEFT', "Left", "Move door so its left edge is at the origin"),
+            ('RIGHT', "Right", "Move door so its right edge is at the origin"),
+        ],
+        default='NONE',
+    )
+
 
 class PROPCONVERTER_ExportPreferences(bpy.types.AddonPreferences):
     """Global addon preferences for export settings.

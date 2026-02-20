@@ -25,16 +25,15 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
         
         layout.operator("propconverter.convert_to_gtav", text=i18n.t("ui.convert_button"))
 
-        # Dynamic and Door Prop toggles
         if props:
             row = layout.row(align=True)
             row.prop(props, "is_dynamic_prop", text=i18n.t("ui.dynamic_prop"))
             row.prop(props, "is_door_prop", text=i18n.t("ui.door_prop"))
             
-            if props.is_dynamic_prop:
-                layout.label(text=f"⚡ {i18n.t('ui.dynamic_prop_desc')}", icon='INFO')
+            # Show Hinge Side options if Door is selected
             if props.is_door_prop:
-                layout.label(text=f"🚪 {i18n.t('ui.door_prop_desc')}", icon='INFO')
+                row = layout.row(align=True)
+                row.prop(props, "door_hinge_side", expand=True)
 
         # Vertex color selector (runs automatically during convert)
         if props:

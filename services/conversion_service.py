@@ -114,9 +114,10 @@ class ConversionService:
             logger.log_error('messages.error.drawable_failed', operator=operator)
             return False
         
-        # Stage 5.5: Apply dynamic flags (composite + bone) after drawable exists
-        if is_dynamic:
-            apply_dynamic_flags(context, composite_obj, drawable_parent)
+        # Stage 6: Apply dynamic/door flags to collision and armature
+        if is_dynamic or is_door:
+            from ..core.conversion.apply_dynamic_flags import apply_dynamic_flags
+            drawable_parent = apply_dynamic_flags(context, collision_parent, drawable_parent, is_dynamic=is_dynamic, is_door=is_door)
         
         # Stage 6: Convert materials
         if not convert_materials(context, model_objs, mod_name, original_name):
@@ -131,7 +132,7 @@ class ConversionService:
             logger.log_error('messages.error.ytyp_failed', operator=operator)
             return False
         
-        if not create_archetype(context, obj, mod_name, original_name, is_dynamic=is_dynamic):
+        if not create_archetype(context, drawable_parent, mod_name, original_name, is_dynamic=is_dynamic, is_door=is_door):
             logger.log_error('messages.error.archetype_failed', operator=operator)
             return False
         
