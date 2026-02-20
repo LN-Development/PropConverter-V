@@ -3,52 +3,92 @@ import importlib
 from ... import constants
 
 
-def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
-    """Convert collision mesh to composite and apply collision materials."""
+def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str, is_dynamic: bool = False, is_door: bool = False):
+    """Convert collision mesh to composite (Dynamic/Static) or standalone Box (Door)."""
     try:
-       
+        from ...sollumz_integration import SollumzIntegration
+        sollumz = SollumzIntegration.get_instance()
+        SollumType = sollumz.get_sollumz_properties().SollumType
+
+        # Store bounds for Box creation (used by both Dynamic and Door)
+        bb_min, bb_max = None, None
+        if is_dynamic or is_door:
+            mesh_data = collision_obj.data
+            import mathutils
+            bb_min = mathutils.Vector((min(v.co.x for v in mesh_data.vertices), 
+                                     min(v.co.y for v in mesh_data.vertices), 
+                                     min(v.co.z for v in mesh_data.vertices)))
+            bb_max = mathutils.Vector((max(v.co.x for v in mesh_data.vertices), 
+                                     max(v.co.y for v in mesh_data.vertices), 
+                                     max(v.co.z for v in mesh_data.vertices)))
+
+        # --- DOOR PROP CONVERSION (Standalone Bound Box) ---
+        if is_door:
+            print("[DOOR] Creating standalone Bound Box collision")
+            old_bound_type = context.scene.create_bound_type
+            context.scene.create_bound_type = SollumType.BOUND_BOX
+            pre_box_objs = {o.name for o in bpy.data.objects}
+            bpy.ops.sollumz.createbound()
+            box_obj = next((o for o in bpy.data.objects if o.name not in pre_box_objs), None)
+            context.scene.create_bound_type = old_bound_type
+            
+            if box_obj:
+                box_obj.name = "Bound Box" # Matches reference report name
+                if hasattr(box_obj, "sz_bound_shape"):
+                    box_obj.sz_bound_shape.box_extents = bb_max - bb_min
+                box_obj.location = (bb_max + bb_min) / 2
+                
+                # Apply material and flags
+                if len(collision_obj.data.materials) > 0:
+                    box_obj.data.materials.append(collision_obj.data.materials[0])
+                
+                # Map collision flags from PropConverter-V properties
+                props = getattr(context.scene, "prop_converter", None)
+                if props and hasattr(props, "collision_flags"):
+                    collision_flags = props.collision_flags
+                    for mat in box_obj.data.materials:
+                        if mat and hasattr(mat, "collision_flags"):
+                            for attr in ["stairs", "not_climbable", "see_through", "shoot_through", 
+                                       "not_cover", "walkable_path", "no_cam_collision", "shoot_through_fx", 
+                                       "no_decal", "no_navmesh", "no_ragdoll", "vehicle_wheel", "no_ptfx", 
+                                       "too_steep_for_player", "no_network_spawn", "no_cam_collision_allow_clipping"]:
+                                if hasattr(collision_flags, attr):
+                                    setattr(mat.collision_flags, attr, getattr(collision_flags, attr))
+            return box_obj
+
+        # --- NORMAL CONVERSION FLOW (Creates Bound Geometry/BVH) ---
         bpy.ops.object.select_all(action='DESELECT')
         collision_obj.select_set(True)
         context.view_layer.objects.active = collision_obj
-        pre_object_names = {o.name for o in bpy.data.objects}
         
-      
+        pre_object_names = {o.name for o in bpy.data.objects}
         bpy.ops.sollumz.converttocomposite()
-  
-
         created_objs = [o for o in bpy.data.objects if o.name not in pre_object_names]
-   
+        
         bvh_obj = next((o for o in created_objs if o.name.lower().endswith(constants.BVH_SUFFIX)), None)
         if bvh_obj is None:
-            bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(constants.BVH_SUFFIX)), None)
+            # Fallback to searching all objects if not in created_objs
+            bvh_obj = next((o for o in bpy.data.objects if o.name.lower().endswith(constants.BVH_SUFFIX) and o.name not in pre_object_names), None)
+        
+        composite_obj = bvh_obj.parent if bvh_obj else None
+        
+        # Apply flag presets and materials to the generated geometry
         if bvh_obj:
-   
-            if bvh_obj.type == 'MESH':
-                print(f"[DEBUG] BVH loops: {len(bvh_obj.data.loops)}, vertices: {len(bvh_obj.data.vertices)}")
-            else:
-                print(f"[DEBUG] BVH is {bvh_obj.type} (not a mesh - likely parent/empty)")
             bpy.ops.object.select_all(action='DESELECT')
             bvh_obj.select_set(True)
             context.view_layer.objects.active = bvh_obj
-            print("[SOLLUMZ] Applying flag preset to BVH...")
             try:
                 bpy.ops.sollumz.load_flag_preset()
-                print("[SOLLUMZ] Flag preset applied successfully.")
-            except Exception as op_err:
-                print(f"[WARNING] Could not apply flag preset via operator: {op_err}")
+            except Exception:
+                pass
 
         poly_mesh = next((o for o in bpy.data.objects if o.name.endswith(constants.POLY_MESH_SUFFIX) and o.parent and o.parent.name == (bvh_obj.name if bvh_obj else "")), None)
         if poly_mesh and mod_name:
-            print(f"[POLY_MESH] Found poly_mesh: {poly_mesh.name}")
-            print(f"[DEBUG]   Poly_mesh loops: {len(poly_mesh.data.loops)}")
-            print(f"[DEBUG]   Poly_mesh vertices: {len(poly_mesh.data.vertices)}")
-            print(f"[DEBUG]   Poly_mesh polygons: {len(poly_mesh.data.polygons)}")
             bpy.ops.object.select_all(action='DESELECT')
             poly_mesh.select_set(True)
             context.view_layer.objects.active = poly_mesh
             try:
                 collision_mat_index = getattr(context.window_manager, "sz_collision_material_index", 0)
-                print(f"Converting materials to collision material index: {collision_mat_index}")
                 collision_materials = importlib.import_module(f"{mod_name}.ybn.collision_materials")
                 create_collision_material = collision_materials.create_collision_material_from_index
                 mesh = poly_mesh.data
@@ -57,65 +97,68 @@ def convert_collision(context, collision_obj: bpy.types.Object, mod_name: str):
                     for i in range(num_materials):
                         collision_mat = create_collision_material(collision_mat_index)
                         mesh.materials[i] = collision_mat
-                        print(f"Converted material slot {i} to collision material")
                 else:
                     collision_mat = create_collision_material(collision_mat_index)
                     mesh.materials.append(collision_mat)
-                    print("Created collision material for empty mesh")
                 
                 # Apply collision flags from PropConverter-V properties
                 props = getattr(context.scene, "prop_converter", None)
                 if props and hasattr(props, "collision_flags"):
                     collision_flags = props.collision_flags
-                    # Apply flags to all collision materials on this mesh
                     for mat in mesh.materials:
                         if mat and hasattr(mat, "collision_flags"):
-                            mat.collision_flags.stairs = collision_flags.stairs
-                            mat.collision_flags.not_climbable = collision_flags.not_climbable
-                            mat.collision_flags.see_through = collision_flags.see_through
-                            mat.collision_flags.shoot_through = collision_flags.shoot_through
-                            mat.collision_flags.not_cover = collision_flags.not_cover
-                            mat.collision_flags.walkable_path = collision_flags.walkable_path
-                            mat.collision_flags.no_cam_collision = collision_flags.no_cam_collision
-                            mat.collision_flags.shoot_through_fx = collision_flags.shoot_through_fx
-                            mat.collision_flags.no_decal = collision_flags.no_decal
-                            mat.collision_flags.no_navmesh = collision_flags.no_navmesh
-                            mat.collision_flags.no_ragdoll = collision_flags.no_ragdoll
-                            mat.collision_flags.vehicle_wheel = collision_flags.vehicle_wheel
-                            mat.collision_flags.no_ptfx = collision_flags.no_ptfx
-                            mat.collision_flags.too_steep_for_player = collision_flags.too_steep_for_player
-                            mat.collision_flags.no_network_spawn = collision_flags.no_network_spawn
-                            mat.collision_flags.no_cam_collision_allow_clipping = collision_flags.no_cam_collision_allow_clipping
-                            print(f"Applied collision flags to material: {mat.name}")
-                
-                print(f"Successfully converted all materials to collision material on {poly_mesh.name}")
+                            for attr in ["stairs", "not_climbable", "see_through", "shoot_through", 
+                                       "not_cover", "walkable_path", "no_cam_collision", "shoot_through_fx", 
+                                       "no_decal", "no_navmesh", "no_ragdoll", "vehicle_wheel", "no_ptfx", 
+                                       "too_steep_for_player", "no_network_spawn", "no_cam_collision_allow_clipping"]:
+                                if hasattr(collision_flags, attr):
+                                    setattr(mat.collision_flags, attr, getattr(collision_flags, attr))
             except Exception as mat_err:
                 print(f"WARNING: Could not apply collision material to poly_mesh: {mat_err}")
-                import traceback
-                traceback.print_exc()
-        else:
-            print("WARNING: Could not find .poly_mesh child for collision material conversion")
 
-        composite_obj = None
-        if bvh_obj:
-            composite_obj = bvh_obj.parent
-        
-        print("[COMPOSITE] Successfully converted collision mesh to Bound Composite")
-        if composite_obj:
-            print(f"[DEBUG] Composite object: {composite_obj.name}")
-            print(f"[DEBUG] Composite object type: {composite_obj.type}")
-            if composite_obj.type == 'MESH':
-                print(f"[DEBUG]   Loops: {len(composite_obj.data.loops) if composite_obj.data else 'N/A'}")
-            else:
-                print(f"[DEBUG] Composite is {composite_obj.type} (not mesh)")
-            print(f"[DEBUG]   Children: {[c.name for c in composite_obj.children]}")
-        print("[STAGE] convert_collision: EXIT")
-        print("="*80 + "\n")
+        # --- DYNAMIC PROP ADDITIONS (Add Bound Box as sibling to Geometry) ---
+        if is_dynamic and composite_obj and bb_min and bb_max:
+            print("[DYNAMIC] Adding Bound Box child to existing composite")
+            bpy.ops.object.select_all(action='DESELECT')
+            composite_obj.select_set(True)
+            context.view_layer.objects.active = composite_obj
+            
+            old_bound_type = context.scene.create_bound_type
+            context.scene.create_bound_type = SollumType.BOUND_BOX
+            pre_box_objs = {o.name for o in bpy.data.objects}
+            bpy.ops.sollumz.createbound()
+            box_obj = next((o for o in bpy.data.objects if o.name not in pre_box_objs), None)
+            context.scene.create_bound_type = old_bound_type
+            
+            if box_obj:
+                box_obj.name = f"{composite_obj.name.replace('.ybn', '')}.box"
+                
+                # 5% Height Calculation
+                total_height = bb_max.z - bb_min.z
+                new_box_height = total_height * 0.05
+                # Ensure minimum height for collision
+                new_box_height = max(0.01, new_box_height)
+                
+                if hasattr(box_obj, "sz_bound_shape"):
+                    # Extents: X, Y remain same, Z is 5%
+                    box_obj.sz_bound_shape.box_extents = (bb_max.x - bb_min.x, bb_max.y - bb_min.y, new_box_height)
+                
+                # Location: Centered horizontally, at the base vertically + half of new height
+                box_obj.location = (
+                    (bb_max.x + bb_min.x) / 2.0,
+                    (bb_max.y + bb_min.y) / 2.0,
+                    bb_min.z + (new_box_height / 2.0)
+                )
+                
+                # Copy first material to the box
+                if poly_mesh and len(poly_mesh.data.materials) > 0:
+                    box_obj.data.materials.append(poly_mesh.data.materials[0])
+                elif collision_obj and len(collision_obj.data.materials) > 0:
+                    box_obj.data.materials.append(collision_obj.data.materials[0])
+
         return composite_obj
     except Exception as e:
         print(f"[ERROR] Failed to convert collision mesh to composite - {e}")
         import traceback
         traceback.print_exc()
-        print("[STAGE] convert_collision: ERROR EXIT")
-        print("="*80 + "\n")
         return None

@@ -55,3 +55,43 @@ TEXTURE_EXTENSION = ".dds"
 DEFAULT_LOCATION = (0.0, 0.0, 0.0)
 DEFAULT_ROTATION = (0.0, 0.0, 0.0)
 DEFAULT_SCALE = (1.0, 1.0, 1.0)
+
+# === Dynamic Prop Configuration ===
+# Composite Flags from GTA V roadcone reference (m23_2_prop_m32_roadcone_01a)
+DYNAMIC_COMPOSITE_FLAGS1 = {
+    "map_weapon": True,
+    "map_dynamic": True,
+    "map_animal": True,
+    "map_cover": True,
+    "map_vehicle": True,
+}
+
+DYNAMIC_COMPOSITE_FLAGS2 = {
+    "vehicle_not_bvh": True,
+    "vehicle_bvh": True,
+    "ped": True,
+    "ragdoll": True,
+    "animal": True,
+    "animal_ragdoll": True,
+    "object": True,
+    "plant": True,
+    "projectile": True,
+    "explosion": True,
+    "forklift_forks": True,
+    "test_weapon": True,
+    "test_camera": True,
+    "test_ai": True,
+    "test_script": True,
+    "test_vehicle_wheel": True,
+    "glass": True,
+}
+
+# Bone flags that enable full physics movement (rotation + translation on all axes)
+DYNAMIC_BONE_FLAGS = ["RotX", "RotY", "RotZ", "TransX", "TransY", "TransZ"]
+
+# Sollumz standard bone size (tail offset from head)
+DYNAMIC_BONE_TAIL_OFFSET = (0.0, 0.05, 0.0)
+
+# Drawable properties for dynamic props (from roadcone reference)
+DYNAMIC_UNKNOWN_1 = 51
+DYNAMIC_UNKNOWN_5 = 216

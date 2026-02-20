@@ -211,6 +211,24 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         type=CollisionFlagsProperties
     )
 
+    model_info: bpy.props.StringProperty(
+        name="Model Information",
+        description="Gathered information about the model and Sollumz metadata",
+        default="",
+    )
+
+    is_dynamic_prop: bpy.props.BoolProperty(
+        name="Dynamic Prop",
+        description="Convert as a dynamic prop with physics (pushable, reactable). Sets composite flags, bone flags, and physics dictionary",
+        default=False,
+    )
+
+    is_door_prop: bpy.props.BoolProperty(
+        name="Door Prop",
+        description="Convert as a door. Uses embedded Bound Box collision (no composite) and specific bone flags",
+        default=False,
+    )
+
 
 class PROPCONVERTER_ExportPreferences(bpy.types.AddonPreferences):
     """Global addon preferences for export settings.

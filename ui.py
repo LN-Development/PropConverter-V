@@ -25,6 +25,17 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
         
         layout.operator("propconverter.convert_to_gtav", text=i18n.t("ui.convert_button"))
 
+        # Dynamic and Door Prop toggles
+        if props:
+            row = layout.row(align=True)
+            row.prop(props, "is_dynamic_prop", text=i18n.t("ui.dynamic_prop"))
+            row.prop(props, "is_door_prop", text=i18n.t("ui.door_prop"))
+            
+            if props.is_dynamic_prop:
+                layout.label(text=f"⚡ {i18n.t('ui.dynamic_prop_desc')}", icon='INFO')
+            if props.is_door_prop:
+                layout.label(text=f"🚪 {i18n.t('ui.door_prop_desc')}", icon='INFO')
+
         # Vertex color selector (runs automatically during convert)
         if props:
             layout.prop(props, "vertex_color", text=i18n.t("ui.vertex_color"))
@@ -156,10 +167,55 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
             for arch in selected_ytyp.archetypes:
                 box.label(text=arch.name)
         
-      
+        # AO Baking section
+        layout.separator()
+        layout.label(text=i18n.t("ui.ao_baking_section"))
+        box = layout.box()
+        box.operator("propconverter.bake_ambient_occlusion", text=i18n.t("ui.bake_ao_button"), icon="SHADING_RENDERED")
+
+        layout.separator()
+        layout.separator()
         layout.separator()
         layout.separator()
         layout.operator("propconverter.export_prop", text=i18n.t("ui.export_button"), icon="EXPORT")
+
+
+class PROPCONVERTER_PT_model_info_panel(bpy.types.Panel):
+
+    bl_label = "Model Information"
+    bl_idname = "PROPCONVERTER_PT_model_info_panel"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_category = "PropConverter-V"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_order = 2
+    
+    def draw(self, context):
+        layout = self.layout
+        props = context.scene.prop_converter
+        
+        layout.operator("propconverter.gather_model_info", text=i18n.t("ui.gather_info_button"), icon="INFO")
+        
+        if props.model_info:
+            # Use a box for the report
+            col = layout.column(align=True)
+            box = col.box()
+            
+            # Simple line-by-line display
+            # Note: Blender labels don't support scrolling naturally, 
+            # but usually the sidebar itself has a scrollbar.
+            lines = props.model_info.split("\n")
+            for line in lines:
+                if not line.strip():
+                    box.separator()
+                    continue
+                
+                # Check for headers to make them stand out
+                row = box.row()
+                if "===" in line or "---" in line:
+                    row.label(text=line, icon="DOT")
+                else:
+                    row.label(text=line)
 
 
 
@@ -167,6 +223,7 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
 
 classes = [
     PROPCONVERTER_PT_main_panel,
+    PROPCONVERTER_PT_model_info_panel,
 ]
 
 

@@ -2,7 +2,7 @@ import bpy
 from ...sollumz_integration import SollumzIntegration
 
 
-def create_archetype(context, obj, mod_name: str, original_name: str):
+def create_archetype(context, obj, mod_name: str, original_name: str, is_dynamic: bool = False):
     try:
         print(f"Creating archetype from drawable: {obj.name}")
         sollumz = SollumzIntegration.get_instance()
@@ -43,6 +43,13 @@ def create_archetype(context, obj, mod_name: str, original_name: str):
         if len(selected_ytyp.archetypes) > 0:
             archetype = selected_ytyp.archetypes[-1]
             archetype.texture_dictionary = original_name
+            
+            # Dynamic props need physics_dictionary pointing to themselves
+            if is_dynamic:
+                archetype.physics_dictionary = original_name
+                archetype.flags.flag18 = True
+                print(f"[DYNAMIC] Set physics_dictionary: {original_name} and Dynamic flag (flag18)")
+            
             print(f"Successfully created archetype: {archetype.name} with texture_dictionary: {original_name}")
         else:
             print("WARNING: No archetypes found after calling createarchetypefromselected")

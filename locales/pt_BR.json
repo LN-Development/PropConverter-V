@@ -3,6 +3,10 @@
     "ui": {
         "panel_title": "PropConverter-V",
         "convert_button": "Converter para GTA V",
+        "dynamic_prop": "Prop Dinâmico",
+        "dynamic_prop_desc": "Física habilitada (empurrável, reativo)",
+        "door_prop": "Prop de Porta",
+        "door_prop_desc": "Colisão embutida (sem .ybn)",
         "export_button": "Exportar YTYP e YDR",
         "vertex_color": "Cor dos Vértices",
         "auto_texture_from_mesh_name": "Textura Automática usando Nome da Mesh",
@@ -38,7 +42,10 @@
         "export_format_xml": "CodeWalker XML",
         "target_versions_heading": "Versões de Destino",
         "target_version_gen8": "Gen 8 (Legacy)",
-        "target_version_gen9": "Gen 9 (Enhanced)"
+        "target_version_gen9": "Gen 9 (Enhanced)",
+        "ao_baking_section": "Oclusão Ambiente",
+        "bake_ao_button": "Fazer Bake de AO para Atributo de Cor",
+        "gather_info_button": "Coletar Informações do Modelo"
     },
     "properties": {
         "original_mesh": {

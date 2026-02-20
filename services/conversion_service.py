@@ -17,6 +17,7 @@ from ..core.conversion import (
     create_ytyp,
     create_archetype
 )
+from ..core.conversion.apply_dynamic_flags import apply_dynamic_flags
 from ..core.mesh_prep.paint_vertex_colors import paint_vertex_colors
 from .. import logger
 from .. import constants
@@ -95,16 +96,27 @@ class ConversionService:
             return False
         
         # Stage 4: Convert collision
-        composite_obj = convert_collision(context, collision_obj, mod_name)
-        if composite_obj is None:
+        props = getattr(context.scene, "prop_converter", None)
+        is_dynamic = props.is_dynamic_prop if props else False
+        is_door = props.is_door_prop if props else False
+        
+        # Stages sync: if door, we skip composite requirement
+        collision_parent = convert_collision(context, collision_obj, mod_name, is_dynamic=is_dynamic, is_door=is_door)
+        if collision_parent is None:
             logger.log_error('messages.error.collision_failed', operator=operator)
             return False
         
         # Stage 5: Convert drawable
-        model_objs, drawable_parent = convert_drawable(context, obj, composite_obj)
+        # For Doors, the collision_parent is the Box itself, but it should be a sibling to the model, 
+        # both under the Armature. convert_drawable handles this by parenting to the armature.
+        model_objs, drawable_parent = convert_drawable(context, obj, collision_parent)
         if not model_objs:
             logger.log_error('messages.error.drawable_failed', operator=operator)
             return False
+        
+        # Stage 5.5: Apply dynamic flags (composite + bone) after drawable exists
+        if is_dynamic:
+            apply_dynamic_flags(context, composite_obj, drawable_parent)
         
         # Stage 6: Convert materials
         if not convert_materials(context, model_objs, mod_name, original_name):
@@ -119,7 +131,7 @@ class ConversionService:
             logger.log_error('messages.error.ytyp_failed', operator=operator)
             return False
         
-        if not create_archetype(context, obj, mod_name, original_name):
+        if not create_archetype(context, obj, mod_name, original_name, is_dynamic=is_dynamic):
             logger.log_error('messages.error.archetype_failed', operator=operator)
             return False
         
@@ -151,9 +163,43 @@ class ConversionService:
         bpy.ops.object.select_all(action='DESELECT')
         obj.select_set(True)
         context.view_layer.objects.active = obj
-        bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
-        obj.location = constants.DEFAULT_LOCATION
-        obj.rotation_euler = constants.DEFAULT_ROTATION
+        
+        # For dynamic props, reset rotation and move to world origin with origin point at (0,0,0)
+        props = getattr(context.scene, "prop_converter", None)
+        if props and props.is_dynamic_prop and obj.type == 'MESH':
+            from mathutils import Vector
+            
+            # 1. Clear parent to ensure absolute world space logic
+            if obj.parent:
+                world_matrix = obj.matrix_world.copy()
+                obj.parent = None
+                obj.matrix_world = world_matrix
+
+            # 2. Reset rotation and location to identity
+            obj.location = (0.0, 0.0, 0.0)
+            obj.rotation_euler = (0.0, 0.0, 0.0)
+            obj.scale = (1.0, 1.0, 1.0)
+            context.view_layer.update()
+            
+            # 3. Center origin on geometry bounds center
+            bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+            
+            # 4. Move mesh so the bottom sits at Z=0 and center is at XY=0
+            obj.location = (0.0, 0.0, 0.0)
+            context.view_layer.update()
+            bbox_world = [obj.matrix_world @ Vector(v) for v in obj.bound_box]
+            min_z = min(v.z for v in bbox_world)
+            obj.location.z -= min_z
+            
+            # 5. Bring origin to world (0,0,0) while mesh stays grounded
+            # This satisfies "set the origin to world origin"
+            bpy.ops.object.transform_apply(location=True, rotation=False, scale=False)
+            
+            print(f"[DYNAMIC] Rotation reset to 0. Mesh grounded at (0,0,0). Origin moved to world (0,0,0).")
+        else:
+            bpy.ops.object.origin_set(type='ORIGIN_GEOMETRY', center='BOUNDS')
+            obj.location = constants.DEFAULT_LOCATION
+            obj.rotation_euler = constants.DEFAULT_ROTATION
         
         # Duplicate for collision
         original_name, collision_obj = duplicate_and_prepare_mesh(context, obj)
