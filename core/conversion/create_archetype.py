@@ -52,22 +52,63 @@ def create_archetype(context, obj, mod_name: str, original_name: str, is_dynamic
         if is_dynamic or is_door:
             archetype.physics_dictionary = original_name
             
+            props = getattr(context.scene, "prop_converter", None)
+            
             # Clear ALL flags first to ensure a clean state
-            for i in range(32):
-                flag_attr = f"flag{i}"
-                if hasattr(archetype.flags, flag_attr):
-                    setattr(archetype.flags, flag_attr, False)
+            if hasattr(archetype.flags, "total"):
+                archetype.flags.total = "0"
+            else:
+                for i in range(32):
+                    flag_attr = f"flag{i}"
+                    if hasattr(archetype.flags, flag_attr):
+                        setattr(archetype.flags, flag_attr, False)
 
             if is_door:
-                # User specifically requested flags 67239936 for doors
+                # All doors (Standard and Rollup/Garage sub-types) use the same flag: 67239936
                 # 67239936 = 2^17 (Bit 17) + 2^26 (Bit 26)
-                archetype.flags.flag17 = True
-                archetype.flags.flag26 = True
-                print(f"[DOOR] Cleared all flags and set Flags 17/26 (Value: 67239936)")
+                flag_val = 67239936
+                
+                if hasattr(archetype.flags, "total"):
+                    archetype.flags.total = str(flag_val)
+                    print(f"[DOOR] Set flags.total = '{flag_val}'")
+                else:
+                    archetype.flags.flag17 = True
+                    archetype.flags.flag26 = True
+                    print(f"[DOOR] Set individual Flags 17/26 (Value: {flag_val})")
+                
+                # Special Attribute (Required for Door behavior animation)
+                if props and hasattr(archetype, "special_attribute"):
+                    # Symbolic map based on Sollumz symbolic enum keys (keys for EnumProperty)
+                    SOLLUMZ_SPECIAL_ATTR_MAP = {
+                        0: 'NOTHING_SPECIAL',
+                        5: 'IS_GARAGE_DOOR',
+                        7: 'IS_NORMAL_DOOR',
+                        8: 'IS_SLIDING_DOOR',
+                        9: 'IS_BARRIER_DOOR',
+                        10: 'IS_SLIDING_DOOR_VERTICAL',
+                        12: 'IS_RAIL_CROSSING_DOOR'
+                    }
+                    
+                    try:
+                        # Try setting as Int first (compatibility with older Sollumz)
+                        archetype.special_attribute = props.special_attribute
+                    except TypeError:
+                        # Fallback for newer Sollumz (expects symbolic enum key string)
+                        val = props.special_attribute
+                        if val in SOLLUMZ_SPECIAL_ATTR_MAP:
+                            archetype.special_attribute = SOLLUMZ_SPECIAL_ATTR_MAP[val]
+                        else:
+                            archetype.special_attribute = 'NOTHING_SPECIAL'
+                    print(f"[DOOR] Set special_attribute = {props.special_attribute}")
+                    
             elif is_dynamic:
-                # Standard Dynamic bit is 18
-                archetype.flags.flag18 = True
-                print(f"[DYNAMIC] Cleared all flags and set Flag 18")
+                # Standard Dynamic bit is 18 (262144)
+                if hasattr(archetype.flags, "total"):
+                    archetype.flags.total = "262144"
+                    print(f"[DYNAMIC] Set flags.total = '262144' (Bit 18)")
+                else:
+                    archetype.flags.flag18 = True
+                    print(f"[DYNAMIC] Set Flag 18")
             
         print(f"Successfully created archetype: {archetype.name} with texture_dictionary: {original_name}")
         return True

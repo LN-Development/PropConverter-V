@@ -194,13 +194,15 @@ def _parent_bounds_to_bone(context, armature_obj):
 
 
 def _align_door_hinge(context, armature_obj, hinge_side):
-    """Shift door components based on dominant horizontal axis so the selected edge is at 0."""
+    """Shift door components based on dominant axis so the selected edge is at 0."""
     if hinge_side == 'NONE':
         return
 
     import mathutils
+    from mathutils import Vector
     min_x, max_x = None, None
     min_y, max_y = None, None
+    min_z, max_z = None, None
 
     # 1. Calculate bounding box of visual meshes relative to armature
     for child in armature_obj.children:
@@ -213,55 +215,96 @@ def _align_door_hinge(context, armature_obj, hinge_side):
                     if max_x is None or local_v.x > max_x: max_x = local_v.x
                     if min_y is None or local_v.y < min_y: min_y = local_v.y
                     if max_y is None or local_v.y > max_y: max_y = local_v.y
+                    if min_z is None or local_v.z < min_z: min_z = local_v.z
+                    if max_z is None or local_v.z > max_z: max_z = local_v.z
 
-    if min_x is None or min_y is None:
+    if min_x is None or min_y is None or min_z is None:
         print("[DOOR] Could not calculate bounds for alignment")
         return
 
-    # 2. Detect dominant horizontal axis (X or Y)
-    width_x = max_x - min_x
-    width_y = max_y - min_y
-    is_x_dominant = width_x >= width_y
+    # 2. Determine Axis and Offset(s)
+    offsets = {} # {axis_name: offset_value}
     
-    axis_name = "X" if is_x_dominant else "Y"
-    min_coord = min_x if is_x_dominant else min_y
-    max_coord = max_x if is_x_dominant else max_y
-    
-    print(f"[DOOR] Dominant axis detected: {axis_name} (Width X: {width_x:.4f}, Width Y: {width_y:.4f})")
+    # v_factors (Z axis presets)
+    v_presets = {'BOTTOM': 0.0, 'MID': 0.5, 'TOP': 1.0}
+    # h_factors (Width axis presets)
+    h_presets = {'LEFT': 0.0, 'RIGHT': 1.0}
 
-    # 3. Determine offset to move selected edge to 0 on the dominant axis
-    offset = 0
-    if hinge_side == 'LEFT':
-        offset = -min_coord
-    elif hinge_side == 'RIGHT':
-        offset = -max_coord
+    # Determine factors from properties
+    props = getattr(context.scene, "prop_converter", None)
+    use_custom = props.use_custom_hinge_offset if props else False
+    custom_factor = (props.door_hinge_custom_offset / 100.0) if props else 0.0
 
-    if abs(offset) < 0.0001:
-        print(f"[DOOR] Edge already at origin on {axis_name}, skipping shift")
-        return
+    print(f"[DOOR] Alignment Debug:")
+    print(f"  - Selected Preset: {hinge_side}")
+    print(f"  - Bounds (X): {min_x:.3f} to {max_x:.3f} (W: {max_x-min_x:.3f})")
+    print(f"  - Bounds (Y): {min_y:.3f} to {max_y:.3f} (D: {max_y-min_y:.3f})")
+    print(f"  - Bounds (Z): {min_z:.3f} to {max_z:.3f} (H: {max_z-min_z:.3f})")
 
-    # 4. Apply offset
+    offsets = {}
+    factor = 0.0
+    axis = None
+
+    if hinge_side in v_presets:
+        # Vertical axis
+        axis = 'Z'
+        # If custom is on, use slider, otherwise use preset
+        factor = custom_factor if use_custom else v_presets[hinge_side]
+        offsets[axis] = -(min_z + (max_z - min_z) * factor)
+        print(f"  - Mode: Vertical (Axis: {axis}, Factor: {factor*100:.1f}%)")
+    elif hinge_side in h_presets:
+        # Width axis (dominant horizontal)
+        width_x = max_x - min_x
+        width_y = max_y - min_y
+        is_x_dominant = width_x >= width_y
+        
+        axis = 'X' if is_x_dominant else 'Y'
+        factor = custom_factor if use_custom else h_presets[hinge_side]
+        
+        min_c = min_x if axis == 'X' else min_y
+        max_c = max_x if axis == 'X' else max_y
+        
+        offsets[axis] = -(min_c + (max_c - min_c) * factor)
+        print(f"  - Mode: Width (Axis: {axis} [dominant], Factor: {factor*100:.1f}%)")
+    else:
+        # Default to origin if anything else (shouldn't happen with current UI)
+        offsets['X'] = -(min_x + max_x) / 2
+        offsets['Y'] = -(min_y + max_y) / 2
+        offsets['Z'] = -(min_z + max_z) / 2
+        print(f"  - Mode: Default/Origin (Full Center)")
+
+    if use_custom:
+        print(f"  - Note: Using Custom Offset Slider ({custom_factor*100:.1f}%)")
+
+    # 4. Apply offsets
     for child in armature_obj.children:
         sollum_type = str(getattr(child, "sollum_type", "")).lower()
         
         if "bound" in sollum_type:
             # Shift object location
-            if is_x_dominant: child.location.x += offset
-            else: child.location.y += offset
-            print(f"[DOOR] Shifted Bound '{child.name}' by {offset:.4f} on {axis_name}")
+            for axis, val in offsets.items():
+                if abs(val) < 0.0001: continue
+                if axis == 'X': child.location.x += val
+                elif axis == 'Y': child.location.y += val
+                elif axis == 'Z': child.location.z += val
+            print(f"[DOOR] Shifted Bound '{child.name}' location")
         else:
             # Shift vertex data for visual meshes
             if child.type == 'MESH':
                 for v in child.data.vertices:
-                    if is_x_dominant: v.co.x += offset
-                    else: v.co.y += offset
+                    for axis, val in offsets.items():
+                        if abs(val) < 0.0001: continue
+                        if axis == 'X': v.co.x += val
+                        elif axis == 'Y': v.co.y += val
+                        elif axis == 'Z': v.co.z += val
                 child.data.update()
-                print(f"[DOOR] Shifted vertex data of '{child.name}' by {offset:.4f} on {axis_name}")
+                print(f"[DOOR] Shifted vertex data of '{child.name}'")
 
-    print(f"[DOOR] Aligned {hinge_side} hinge on {axis_name} axis")
+    affected_axes = ", ".join(offsets.keys())
+    print(f"[DOOR] Aligned {hinge_side} hinge on {affected_axes} axis")
 
 
-def apply_dynamic_flags(context, composite_obj, drawable_parent, is_dynamic=True, is_door=False):
+def apply_dynamic_flags(context, composite_obj, drawable_parent, is_dynamic=False, is_door=False):
     """Apply all dynamic or door prop flags to the collision and armature.
     
     Args:
@@ -272,6 +315,7 @@ def apply_dynamic_flags(context, composite_obj, drawable_parent, is_dynamic=True
         is_door: Whether it's a door prop
     """
     label = "DOOR" if is_door else "DYNAMIC"
+        
     print(f"[{label}] ===== Applying {label.lower()} prop flags =====")
     print(f"[{label}] Collision: {composite_obj.name if composite_obj else 'None'}")
     print(f"[{label}] Drawable: {drawable_parent.name if drawable_parent else 'None'} (type: {drawable_parent.type if drawable_parent else 'N/A'})")
@@ -280,28 +324,27 @@ def apply_dynamic_flags(context, composite_obj, drawable_parent, is_dynamic=True
     if is_dynamic and composite_obj:
         _apply_flags_recursive(composite_obj)
 
-    # 2. Setup Armature (Required for both)
+    # 2. Setup Armature (Required for all)
     if drawable_parent:
         armature_obj = drawable_parent
         if drawable_parent.type != 'ARMATURE':
             armature_obj = _convert_empty_to_armature(context, drawable_parent)
         
         if armature_obj:
-            # A. Bone flags and position (CRITICAL)
+            # A. Bone flags and position (CRITICAL for all)
             _apply_bone_flags(context, armature_obj)
             
             # B. Sync bones and children (Copy Transforms for Visuals, Bone Parent for Bounds)
-            # This ensures both follow the bone rigidly according to user clarification
             _add_copy_transforms_constraints(context, armature_obj)
             _parent_bounds_to_bone(context, armature_obj)
             
-            # C. Door Hinge Alignment (Move mesh, keep bone at origin)
+            # C. Hinge Alignment (Move mesh, keep bone at origin)
             if is_door:
                 props = getattr(context.scene, "prop_converter", None)
                 if props:
                     _align_door_hinge(context, armature_obj, props.door_hinge_side)
 
-            # D. Set Drawable flags if possible (experimental, mainly for dynamic)
+            # D. Set Drawable flags
             if is_dynamic and hasattr(armature_obj, "drawable_properties"):
                 dp = armature_obj.drawable_properties
                 for attr, val in [("unknown_1", constants.DYNAMIC_UNKNOWN_1), 

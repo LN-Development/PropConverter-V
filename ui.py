@@ -30,10 +30,20 @@ class PROPCONVERTER_PT_main_panel(bpy.types.Panel):
             row.prop(props, "is_dynamic_prop", text=i18n.t("ui.dynamic_prop"))
             row.prop(props, "is_door_prop", text=i18n.t("ui.door_prop"))
             
-            # Show Hinge Side options if Door is selected
+            # Show Door Type and Hinge Side if Door is selected
             if props.is_door_prop:
-                row = layout.row(align=True)
-                row.prop(props, "door_hinge_side", expand=True)
+                box = layout.box()
+                box.prop(props, "door_type", text=i18n.t("ui.door_type"))
+                
+                box.label(text=i18n.t("ui.hinge_alignment"))
+                box.prop(props, "door_hinge_side")
+                
+                # Custom Offset controls
+                if props.door_hinge_side != 'MID':
+                    row = box.row()
+                    row.prop(props, "use_custom_hinge_offset", text=i18n.t("ui.door_hinge_custom"))
+                    if props.use_custom_hinge_offset:
+                        box.prop(props, "door_hinge_custom_offset", text=i18n.t("ui.door_hinge_offset_pct"))
 
         # Vertex color selector (runs automatically during convert)
         if props:

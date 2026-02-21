@@ -29,10 +29,45 @@ def update_default_flags(self, context):
         for flag_name in constants.ALL_COLLISION_FLAGS:
             if flag_name not in constants.DEFAULT_COLLISION_FLAGS:
                 setattr(self.collision_flags, flag_name, False)
-    else:
-        # When disabled, clear ALL flags
-        for flag_name in constants.ALL_COLLISION_FLAGS:
-            setattr(self.collision_flags, flag_name, False)
+
+
+def update_hinge_preset(self, context):
+    """Synchronize the custom offset slider with the selected preset."""
+    factors = {
+        'LEFT': 0.0,
+        'RIGHT': 100.0,
+        'BOTTOM': 0.0,
+        'TOP': 100.0,
+        'MID': 50.0
+    }
+    if self.door_hinge_side in factors:
+        self.door_hinge_custom_offset = factors[self.door_hinge_side]
+    
+    # Disable custom alignment if Middle is selected (as requested)
+    if self.door_hinge_side == 'MID':
+        self.use_custom_hinge_offset = False
+
+
+def update_prop_type(self, context):
+    """Ensure mutual exclusivity between Dynamic and Door prop types."""
+    if self.is_dynamic_prop:
+        self["is_door_prop"] = False
+    elif self.is_door_prop:
+        self["is_dynamic_prop"] = False
+
+
+def update_door_type(self, context):
+    """Automatically set special_attribute based on selected door_type."""
+    mapping = {
+        'GARAGE': 5,
+        'NORMAL': 7,
+        'SLIDING': 8,
+        'BARRIER': 9,
+        'SLIDING_VERTICAL': 10,
+        'RAIL_CROSSING': 12
+    }
+    if self.door_type in mapping:
+        self.special_attribute = mapping[self.door_type]
 
 
 class CollisionFlagsProperties(bpy.types.PropertyGroup):
@@ -221,23 +256,67 @@ class PROPCONVERTER_Properties(bpy.types.PropertyGroup):
         name="Dynamic Prop",
         description="Convert as a dynamic prop with physics (pushable, reactable). Sets composite flags, bone flags, and physics dictionary",
         default=False,
+        update=update_prop_type,
     )
 
     is_door_prop: bpy.props.BoolProperty(
         name="Door Prop",
-        description="Convert as a door. Uses embedded Bound Box collision (no composite) and specific bone flags",
+        description="Convert as a door. Uses embedded Bound Box collision and specific bone flags",
         default=False,
+        update=update_prop_type,
+    )
+
+    door_type: bpy.props.EnumProperty(
+        name="Door Type",
+        description="Type of door behavior in GTA V",
+        items=[
+            ('NORMAL', "Normal Door", "Common swinging door"),
+            ('GARAGE', "Garage Door", "Standard rollup/garage door"),
+            ('SLIDING', "Sliding Door", "Horizontal sliding door"),
+            ('BARRIER', "Barrier Door", "Parking/toll barrier arm"),
+            ('SLIDING_VERTICAL', "Sliding Vertical Door", "Door that slides upwards"),
+            ('RAIL_CROSSING', "Rail Crossing Barrier Door", "Train crossing barrier"),
+        ],
+        default='NORMAL',
+        update=update_door_type,
+    )
+
+    special_attribute: bpy.props.IntProperty(
+        name="Special Attribute",
+        description="Sollumz Special Attribute for the door",
+        default=7, # Default for Normal Door
+        min=0,
+        max=255,
     )
 
     door_hinge_side: bpy.props.EnumProperty(
-        name="Hinge Side",
-        description="Align the door hinge to the world origin",
+        name="Hinge Preset",
+        description="Choose a starting side or center for alignment",
         items=[
-            ('NONE', "Center", "Keep door in its current position"),
-            ('LEFT', "Left", "Move door so its left edge is at the origin"),
-            ('RIGHT', "Right", "Move door so its right edge is at the origin"),
+            ('LEFT', "Left", "Horizontal 0%"),
+            ('RIGHT', "Right", "Horizontal 100%"),
+            ('BOTTOM', "Bottom", "Vertical 0%"),
+            ('TOP', "Top", "Vertical 100%"),
+            ('MID', "Middle", "Vertical 50%"),
         ],
-        default='NONE',
+        default='LEFT',
+        update=update_hinge_preset
+    )
+
+    use_custom_hinge_offset: bpy.props.BoolProperty(
+        name="Custom Alignment",
+        description="Manually specify the offset percentage",
+        default=False
+    )
+
+    door_hinge_custom_offset: bpy.props.FloatProperty(
+        name="Offset %",
+        description="Offset percentage from the minimum edge (0% = Min, 100% = Max)",
+        default=0.0,
+        min=0.0,
+        max=100.0,
+        precision=1,
+        subtype='PERCENTAGE'
     )
 
 
