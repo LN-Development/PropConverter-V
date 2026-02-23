@@ -1,6 +1,6 @@
 # PropConverter-V 
 
-Add-on for automatic conversion of props to GTA V with integrated Vertex Color Master tools.
+Add-on for automatic conversion of props to GTA V.
 
 ## HOW TO USE
 
